@@ -15,7 +15,7 @@ final class FavoriteViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigationBar(withTitle: "グルスポ")
+        configureNavigationBar(withTitle: L10n.navigationBarTitle)
         configureUI()
     }
     
