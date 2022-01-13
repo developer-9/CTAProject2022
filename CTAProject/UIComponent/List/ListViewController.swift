@@ -22,8 +22,7 @@ final class ListViewController: UIViewController {
     // MARK: - Helpers
     
     private func configureUI() {
-        view.backgroundColor = .white
-        
-        /// ここにUIコードを書いていく
+        view.backgroundColor = .systemGray6
+        // TODO: ここにUIコードを書いていく
     }
 }
