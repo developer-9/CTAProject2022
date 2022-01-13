@@ -1,5 +1,5 @@
 //
-//  UIViewController+Extension.swift
+//  UIViewController+NavigationBar.swift
 //  CTAProject
 //
 //  Created by Taisei Sakamoto on 2022/01/12.
@@ -9,7 +9,7 @@ import UIKit
 
 extension UIViewController {
     
-    public func configureNavigationBar(withTitle title: String) {
+    func configureNavigationBar(withTitle title: String) {
         
         let navigationBarAppearance = UINavigationBarAppearance()
         

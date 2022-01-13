@@ -1,5 +1,5 @@
 //
-//  UIColor+Extension.swift
+//  UIColor+RGB.swift
 //  CTAProject
 //
 //  Created by Taisei Sakamoto on 2022/01/11.
