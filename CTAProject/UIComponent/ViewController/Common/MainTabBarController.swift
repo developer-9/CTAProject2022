@@ -19,7 +19,7 @@ final class MainTabBarController: UITabBarController {
     // MARK: - Helpers
     
     private func configureViewControllers() {
-        tabBar.tintColor = .baseYellow
+        tabBar.tintColor = UIColor.CTAColor.baseYellow
         
         let searchVC = templeteNavigationController(title: "リスト", systemName: "list.bullet", rootViewController: ListViewController())
         let favoriteVC = templeteNavigationController(title: "お気に入り", systemName: "star", rootViewController: FavoriteViewController())
