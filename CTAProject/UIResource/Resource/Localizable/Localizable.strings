@@ -1,3 +1,5 @@
 
 // MARK: - サンプル
-"LocalizeSample" = "ローカライズサンプル";
+"navigationBarTitle" = "グルスポ";
+"listTabBarTitle" = "リスト";
+"favoriteTabBarTitle" = "お気に入り";

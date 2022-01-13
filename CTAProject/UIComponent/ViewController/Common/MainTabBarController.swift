@@ -21,10 +21,12 @@ final class MainTabBarController: UITabBarController {
     private func configureViewControllers() {
         tabBar.tintColor = UIColor.CTAColor.baseYellow
         
-        let searchVC = templeteNavigationController(title: "リスト", systemName: "list.bullet", rootViewController: ListViewController())
-        let favoriteVC = templeteNavigationController(title: "お気に入り", systemName: "star", rootViewController: FavoriteViewController())
+        let listVC = templeteNavigationController(title: L10n.listTabBarTitle, systemName: "list.bullet",
+                                                  rootViewController: ListViewController())
+        let favoriteVC = templeteNavigationController(title: L10n.favoriteTabBarTitle, systemName: "star",
+                                                      rootViewController: FavoriteViewController())
         
-        viewControllers = [searchVC, favoriteVC]
+        viewControllers = [listVC, favoriteVC]
     }
     
     private func templeteNavigationController(title: String, systemName: String, rootViewController: UIViewController) -> UINavigationController {
