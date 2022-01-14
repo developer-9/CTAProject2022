@@ -18,7 +18,7 @@ extension UIViewController {
             .foregroundColor : UIColor.white,
             .font : UIFont.systemFont(ofSize: 22, weight: .bold)
         ]
-        navigationBarAppearance.backgroundColor = UIColor.CTAColor.baseYellow
+        navigationBarAppearance.backgroundColor = UIColor.CTA.baseYellow
         
         navigationController?.navigationBar.standardAppearance = navigationBarAppearance
         navigationController?.navigationBar.compactAppearance = navigationBarAppearance

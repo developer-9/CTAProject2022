@@ -19,7 +19,7 @@ final class MainTabBarController: UITabBarController {
     // MARK: - Helpers
     
     private func configureViewControllers() {
-        tabBar.tintColor = UIColor.CTAColor.baseYellow
+        tabBar.tintColor = UIColor.CTA.baseYellow
         
         let listVC = templeteNavigationController(title: L10n.listTabBarTitle, systemName: "list.bullet",
                                                   rootViewController: ListViewController())

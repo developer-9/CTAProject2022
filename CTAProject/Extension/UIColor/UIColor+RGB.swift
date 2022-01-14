@@ -12,10 +12,9 @@ extension UIColor {
         return UIColor.init(red: red/255, green: green/255, blue: blue/255, alpha: 1.0)
     }
     
-    enum CTAColor {
+    enum CTA {
         static let baseGray = UIColor.rgb(red: 153, green: 153, blue: 153)
         static let baseYellow = UIColor.rgb(red: 255, green: 204, blue: 0)
         static let searchBarBackground = UIColor.rgb(red: 255, green: 253, blue: 245)
-        static let tableViewBackground = UIColor.rgb(red: 242, green: 242, blue: 247)
     }
 }
