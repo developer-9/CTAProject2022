@@ -12,11 +12,11 @@ final class ShopTableViewCell: UITableViewCell {
     // MARK: - Properties
     
     private let shopImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.image = UIImage(named: Asset.shopSample.name)
-        iv.contentMode = .scaleAspectFill
-        iv.clipsToBounds = true
-        return iv
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: Asset.shopSample.name)
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
     }()
     
     private let shopNameLabel: UILabel = {
