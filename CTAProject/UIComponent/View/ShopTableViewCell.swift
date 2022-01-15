@@ -24,7 +24,6 @@ final class ShopTableViewCell: UITableViewCell {
         label.text = "馬肉食堂 BAKAYARO 本厚木"
         label.numberOfLines = 2
         label.textAlignment = .left
-        label.textColor = .black
         label.font = .systemFont(ofSize: 16, weight: .semibold)
         return label
     }()
@@ -32,7 +31,6 @@ final class ShopTableViewCell: UITableViewCell {
     private let budgetLabel: UILabel = {
         let label = UILabel()
         label.text = "3001~4000円"
-        label.textColor = .black
         label.numberOfLines = 1
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 16)
@@ -42,7 +40,6 @@ final class ShopTableViewCell: UITableViewCell {
     private let shopDetailLabel: UILabel = {
         let label = UILabel()
         label.text = "居酒屋/本厚木駅"
-        label.textColor = .black
         label.numberOfLines = 1
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 16)
