@@ -70,6 +70,7 @@ final class ShopTableViewCell: UITableViewCell {
         stack.axis = .vertical
         
         addSubview(stack)
-        stack.centerY(inView: self, leftAnchor: shopImageView.rightAnchor, paddingLeft: 20)
+        stack.centerY(inView: self)
+        stack.anchor(left: shopImageView.rightAnchor, right: self.rightAnchor, paddingLeft: 20, paddingRight: 20)
     }
 }
