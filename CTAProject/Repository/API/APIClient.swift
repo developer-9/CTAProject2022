@@ -22,17 +22,18 @@ final class APIClient {
                 return
             }
             
-            if case 200 ..< 300 = response.statusCode {
-                do {
-                    let jsonDecoder = JSONDecoder()
-                    jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
-                    let decodedData = try jsonDecoder.decode(T.ResponseType.self, from: data)
-                    completion(.success(decodedData))
-                } catch let decodeError {
-                    completion(.failure(.decode(decodeError)))
-                }
-            } else {
+            guard case 200 ..< 300 = response.statusCode else {
                 completion(.failure(.server(response.statusCode)))
+                return
+            }
+            
+            do {
+                let jsonDecoder = JSONDecoder()
+                jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
+                let decodedData = try jsonDecoder.decode(T.ResponseType.self, from: data)
+                completion(.success(decodedData))
+            } catch let decodeError {
+                completion(.failure(.decode(decodeError)))
             }
         }
         task.resume()
