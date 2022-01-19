@@ -1,4 +1,5 @@
 PODS:
+  - Kingfisher (7.1.2)
   - PKHUD (5.3.0)
   - RxRelay (6.2.0):
     - RxSwift (= 6.2.0)
@@ -10,6 +11,7 @@ PODS:
     - RxSwift (~> 6.0)
 
 DEPENDENCIES:
+  - Kingfisher (~> 7.0)
   - PKHUD
   - SwiftGen
   - SwiftLint
@@ -17,6 +19,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Kingfisher
     - PKHUD
     - RxRelay
     - RxSwift
@@ -25,6 +28,7 @@ SPEC REPOS:
     - Unio
 
 SPEC CHECKSUMS:
+  Kingfisher: 44ed6a8504763f27bab46163adfac83f5deb240c
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
   RxRelay: e72dbfd157807478401ef1982e1c61c945c94b2f
   RxSwift: d356ab7bee873611322f134c5f9ef379fa183d8f
@@ -32,6 +36,6 @@ SPEC CHECKSUMS:
   SwiftLint: 06ac37e4d38c7068e0935bb30cda95f093bec761
   Unio: 6e57bd33dbcf38d281b0b420f75c0eae3bef0cf3
 
-PODFILE CHECKSUM: 99c57a540111d5794b59728aef6ef3a8c9f4c0de
+PODFILE CHECKSUM: 1b3c86053bf8ca93158624ba172577c5011a3708
 
 COCOAPODS: 1.11.2

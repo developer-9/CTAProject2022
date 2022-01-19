@@ -8,6 +8,7 @@ target 'CTAProject' do
   pod 'SwiftGen'
   pod 'Unio'
   pod 'PKHUD'
+  pod 'Kingfisher', '~> 7.0'
 
   # Pods for CTAProject
 
