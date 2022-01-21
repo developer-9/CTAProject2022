@@ -17,6 +17,12 @@ final class ListViewController: UIViewController {
     private let tableView = UITableView()
     private let searchBar = UISearchBar()
     
+    private lazy var alertView: AlertView = {
+        let view = AlertView()
+        view.delegate = self
+        return view
+    }()
+    
     private var shops = [Shop]() {
         didSet {
             DispatchQueue.main.async {
@@ -85,6 +91,25 @@ final class ListViewController: UIViewController {
         tableView.anchor(top: searchBar.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
     }
     
+    private func characterLimit(searchText: String) -> String {
+        let characterLimit = 50
+        let validCharacters = String(searchText.prefix(characterLimit))
+        return validCharacters
+    }
+}
+
+// MARK: - UISearchBarDelegate
+
+extension ListViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let searchText = searchBar.text else { return }
+        if searchText.count > 50 {
+            view.addSubview(alertView)
+            alertView.fillSuperView()
+            searchBar.text = characterLimit(searchText: searchText)
+        } else {
+            searchShops(with: searchText)
+        }
     }
 }
 
@@ -105,5 +130,13 @@ extension ListViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(for: indexPath, cellType: ShopTableViewCell.self)
         cell.listViewModel = ListViewModel(shop: shops[indexPath.row])
         return cell
+    }
+}
+
+// MARK: - AlertViewDelegate
+
+extension ListViewController: AlertViewDelegate {
+    func handleDsimiss() {
+        alertView.removeFromSuperview()
     }
 }
