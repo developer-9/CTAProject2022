@@ -15,6 +15,8 @@ final class ListViewController: UIViewController {
     private let repository: SearchRepository
     
     private let tableView = UITableView()
+    private let searchBar = UISearchBar()
+    
     private var shops = [Shop]() {
         didSet {
             DispatchQueue.main.async {
@@ -38,6 +40,7 @@ final class ListViewController: UIViewController {
         super.viewDidLoad()
         configureTableView()
         configureNavigationBar(withTitle: L10n.navigationBarTitle)
+        configureSearchController()
         configureUI()
     }
     
@@ -58,6 +61,13 @@ final class ListViewController: UIViewController {
             }
         }
     }
+    
+    private func configureSearchController() {
+        searchBar.placeholder = L10n.searchBarPlaceholder
+        searchBar.backgroundColor = UIColor.CTA.searchBarBackground
+        searchBar.delegate = self
+    }
+    
     private func configureTableView() {
         tableView.delegate = self
         tableView.dataSource = self
@@ -67,8 +77,14 @@ final class ListViewController: UIViewController {
     
     private func configureUI() {
         tableView.backgroundColor = .systemGray6
+                
+        view.addSubview(searchBar)
+        searchBar.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor, height: 80)
+        
         view.addSubview(tableView)
-        tableView.fillSuperView()
+        tableView.anchor(top: searchBar.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
+    }
+    
     }
 }
 
