@@ -7,34 +7,26 @@
 
 import UIKit
 import PKHUD
+import RxSwift
+import RxCocoa
+import RxDataSources
 
 final class ListViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let repository: SearchRepository
-    
     private let tableView = UITableView()
     private let searchBar = UISearchBar()
     
-    private lazy var alertView: AlertView = {
-        let view = AlertView()
-        view.delegate = self
-        return view
-    }()
+    private let viewModel: ListViewModelType
+    private var dataSource: RxTableViewSectionedReloadDataSource<ShopResponseSectionModel>?
     
-    private var shops = [Shop]() {
-        didSet {
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        }
-    }
+    private let disposeBag = DisposeBag()
     
     // MARK: - Lifecycle
     
-    init(repository: SearchRepository = SearchRepositoryImpl()) {
-        self.repository = repository
+    init(viewModel: ListViewModelType = ListViewModel()) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -48,25 +40,43 @@ final class ListViewController: UIViewController {
         configureNavigationBar(withTitle: L10n.navigationBarTitle)
         configureSearchController()
         configureUI()
+        
+        // MARK: Inputs
+        
+        searchBar.rx.text.orEmpty
+            .bind(to: viewModel.inputs.searchText)
+            .disposed(by: disposeBag)
+        
+        // MARK: Outputs
+        
+        viewModel.outputs.validatedText
+            .bind(to: searchBar.rx.text)
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.alert.subscribe { [weak self] _ in
+            guard let me = self else { return }
+            let alertView = AlertView()
+            me.view.addSubview(alertView)
+            alertView.fillSuperView()
+        }.disposed(by: disposeBag)
+        
+        viewModel.outputs.hud.subscribe { [weak self] type in
+            guard let type = type.element,
+                  let me = self else { return }
+            HUD.show(type, onView: me.view)
+        }.disposed(by: disposeBag)
+        
+        viewModel.outputs.hide.subscribe { _ in
+            HUD.hide()
+        }.disposed(by: disposeBag)
+        
+        guard let dataSource = dataSource else { return }
+        viewModel.outputs.dataSource
+            .bind(to: tableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
     }
     
     // MARK: - Helpers
-    
-    private func searchShops(with keyword: String) {
-        HUD.show(.progress)
-        repository.searchShops(with: keyword) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let shopResponse):
-                self.shops = shopResponse.results.shop
-            case .failure(let error):
-                print("DEBUG: Error \(error.description)")
-            }
-            DispatchQueue.main.async {
-                HUD.hide()
-            }
-        }
-    }
     
     private func configureSearchController() {
         searchBar.placeholder = L10n.searchBarPlaceholder
@@ -75,10 +85,15 @@ final class ListViewController: UIViewController {
     }
     
     private func configureTableView() {
-        tableView.delegate = self
-        tableView.dataSource = self
         tableView.rowHeight = 100
         tableView.register(cellType: ShopTableViewCell.self)
+        
+        dataSource =
+        RxTableViewSectionedReloadDataSource<ShopResponseSectionModel>(configureCell: { dataSource, tableView, indexPath, item in
+            let cell = tableView.dequeueReusableCell(for: indexPath, cellType: ShopTableViewCell.self)
+            cell.setupData(item: item)
+            return cell
+        })
     }
     
     private func configureUI() {
@@ -90,12 +105,6 @@ final class ListViewController: UIViewController {
         view.addSubview(tableView)
         tableView.anchor(top: searchBar.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
     }
-    
-    private func characterLimit(searchText: String) -> String {
-        let characterLimit = 50
-        let validCharacters = String(searchText.prefix(characterLimit))
-        return validCharacters
-    }
 }
 
 // MARK: - UISearchBarDelegate
@@ -103,40 +112,10 @@ final class ListViewController: UIViewController {
 extension ListViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let searchText = searchBar.text else { return }
-        if searchText.count > 50 {
-            view.addSubview(alertView)
-            alertView.fillSuperView()
-            searchBar.text = characterLimit(searchText: searchText)
-        } else {
-            searchShops(with: searchText)
-        }
+        viewModel.inputs.search.onNext(searchText)
     }
 }
 
-// MARK: - UITableViewDelegate
 
-extension ListViewController: UITableViewDelegate {
-    
-}
-
-// MARK: - UITableViewDataSource
-
-extension ListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return shops.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(for: indexPath, cellType: ShopTableViewCell.self)
-        cell.listViewModel = ListViewModel(shop: shops[indexPath.row])
-        return cell
-    }
-}
-
-// MARK: - AlertViewDelegate
-
-extension ListViewController: AlertViewDelegate {
-    func handleDsimiss() {
-        alertView.removeFromSuperview()
     }
 }
