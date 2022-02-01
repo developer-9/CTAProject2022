@@ -12,12 +12,6 @@ final class ShopTableViewCell: UITableViewCell {
     
     // MARK: - Properties
     
-    var listViewModel: ListViewModel? {
-        didSet {
-            populateShopData()
-        }
-    }
-    
     private let shopImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -77,11 +71,12 @@ final class ShopTableViewCell: UITableViewCell {
         stack.anchor(left: shopImageView.rightAnchor, right: self.rightAnchor, paddingLeft: 20, paddingRight: 20)
     }
     
-    private func populateShopData() {
-        guard let listViewModel = listViewModel else { return }
-        shopImageView.kf.setImage(with: listViewModel.logoImageUrl)
-        shopNameLabel.text = listViewModel.shopName
-        budgetLabel.text = listViewModel.budgetName
-        shopDetailLabel.text = listViewModel.shopDetails
+    func setupData(item: Shop) {
+        shopImageView.kf.setImage(with: item.logoImage)
+        shopNameLabel.text = item.name
+        budgetLabel.text = item.budget.name
+        guard let genre = item.genre,
+              let stationName = item.stationName else { return }
+        shopDetailLabel.text = "\(genre.name) / \(stationName)"
     }
 }
