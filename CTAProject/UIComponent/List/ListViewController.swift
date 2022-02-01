@@ -85,7 +85,7 @@ final class ListViewController: UIViewController {
     }
     
     private func configureTableView() {
-        tableView.rowHeight = 100
+        tableView.rowHeight = Const.TableView.height
         tableView.register(cellType: ShopTableViewCell.self)
         
         dataSource =
@@ -100,7 +100,7 @@ final class ListViewController: UIViewController {
         tableView.backgroundColor = .systemGray6
                 
         view.addSubview(searchBar)
-        searchBar.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor, height: 80)
+        searchBar.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor, height: Const.SearchBar.height)
         
         view.addSubview(tableView)
         tableView.anchor(top: searchBar.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
@@ -116,6 +116,15 @@ extension ListViewController: UISearchBarDelegate {
     }
 }
 
+// MARK: - Enum
 
+extension ListViewController {
+    private enum Const {
+        enum SearchBar {
+            static let height = CGFloat(80)
+        }
+        enum TableView {
+            static let height = CGFloat(100)
+        }
     }
 }
