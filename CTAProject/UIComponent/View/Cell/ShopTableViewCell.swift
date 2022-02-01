@@ -6,14 +6,20 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ShopTableViewCell: UITableViewCell {
     
     // MARK: - Properties
     
+    var listViewModel: ListViewModel? {
+        didSet {
+            populateShopData()
+        }
+    }
+    
     private let shopImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: Asset.shopSample.name)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         return imageView
@@ -21,7 +27,6 @@ final class ShopTableViewCell: UITableViewCell {
     
     private let shopNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "馬肉食堂 BAKAYARO 本厚木"
         label.numberOfLines = 2
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 16, weight: .semibold)
@@ -30,7 +35,6 @@ final class ShopTableViewCell: UITableViewCell {
     
     private let budgetLabel: UILabel = {
         let label = UILabel()
-        label.text = "3001~4000円"
         label.numberOfLines = 1
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 16)
@@ -39,7 +43,6 @@ final class ShopTableViewCell: UITableViewCell {
     
     private let shopDetailLabel: UILabel = {
         let label = UILabel()
-        label.text = "居酒屋/本厚木駅"
         label.numberOfLines = 1
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 16)
@@ -72,5 +75,13 @@ final class ShopTableViewCell: UITableViewCell {
         addSubview(stack)
         stack.centerY(inView: self)
         stack.anchor(left: shopImageView.rightAnchor, right: self.rightAnchor, paddingLeft: 20, paddingRight: 20)
+    }
+    
+    private func populateShopData() {
+        guard let listViewModel = listViewModel else { return }
+        shopImageView.kf.setImage(with: listViewModel.logoImageUrl)
+        shopNameLabel.text = listViewModel.shopName
+        budgetLabel.text = listViewModel.budgetName
+        shopDetailLabel.text = listViewModel.shopDetails
     }
 }
