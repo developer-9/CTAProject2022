@@ -9,6 +9,9 @@ target 'CTAProject' do
   pod 'Unio'
   pod 'PKHUD'
   pod 'Kingfisher', '~> 7.0'
+  pod 'RxCocoa'
+  pod 'Moya/RxSwift', '~> 15.0'
+  pod 'RxDataSources', '~> 5.0'
 
   # Pods for CTAProject
 
