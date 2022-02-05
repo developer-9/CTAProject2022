@@ -45,13 +45,11 @@ final class AlertView: UIView {
     override init(frame: CGRect) {
         super.init(frame: .zero)
         configureUI()
-        
-        closeButton.rx.tap.subscribe { [weak self] _ in
-            guard let self = self else { return }
-            self.removeFromSuperview()
-        }.disposed(by: disposeBag)
+
+        closeButton.rx.tap.subscribe(onNext: { [weak self] in
             guard let me = self else { return }
             me.removeFromSuperview()
+        }).disposed(by: disposeBag)
     }
     
     required init?(coder: NSCoder) {
