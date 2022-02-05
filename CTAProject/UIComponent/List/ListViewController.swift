@@ -65,23 +65,28 @@ final class ListViewController: UIViewController {
             .bind(to: searchBar.rx.text)
             .disposed(by: disposeBag)
         
-        viewModel.outputs.alert.subscribe { [weak self] _ in
-            guard let me = self else { return }
-            let alertView = AlertView()
-            me.view.addSubview(alertView)
-            alertView.fillSuperView()
-        }.disposed(by: disposeBag)
+        viewModel.outputs.alert
+            .observe(on: ConcurrentMainScheduler.instance)
+            .subscribe(onNext: { [weak self] in
+                guard let me = self else { return }
+                me.view.endEditing(true)
+                let alertView = AlertView()
+                me.view.addSubview(alertView)
+                alertView.fillSuperView()
+            }).disposed(by: disposeBag)
         
-        viewModel.outputs.hud.subscribe { [weak self] type in
-            guard let type = type.element,
-                  let me = self else { return }
-            HUD.show(type, onView: me.view)
-        }.disposed(by: disposeBag)
+        viewModel.outputs.hud
+            .observe(on: ConcurrentMainScheduler.instance)
+            .subscribe(onNext: { _ in
+                HUD.show(.progress)
+            }).disposed(by: disposeBag)
         
-        viewModel.outputs.hide.subscribe { _ in
-            HUD.hide()
-        }.disposed(by: disposeBag)
-        
+        viewModel.outputs.hide
+            .observe(on: ConcurrentMainScheduler.instance)
+            .subscribe(onNext: { _ in
+                HUD.hide()
+            }).disposed(by: disposeBag)
+
         guard let dataSource = dataSource else { return }
         viewModel.outputs.dataSource
             .bind(to: tableView.rx.items(dataSource: dataSource))
