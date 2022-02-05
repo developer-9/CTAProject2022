@@ -46,12 +46,12 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
     
     private let disposeBag = DisposeBag()
     
-    init(repository: HotpepperAPIRepositoryType = HotpepperAPIRepository()) {
+    init(hotpepperAPIRepository: HotpepperAPIRepositoryType = HotpepperAPIRepository()) {
                 
         $search.flatMapLatest { [weak self] text -> Observable<Event<ShopResponse>> in
             guard let me = self else { return .empty() }
             me.$hud.accept(.progress)
-            return repository.request(HotPepperAPIService.SearchShopsRequest(keyword: text))
+            return hotpepperAPIRepository.request(HotPepperAPIService.SearchShopsRequest(keyword: text))
                 .timeout(.seconds(5), scheduler: ConcurrentMainScheduler.instance)
                 .asObservable()
                 .materialize()
