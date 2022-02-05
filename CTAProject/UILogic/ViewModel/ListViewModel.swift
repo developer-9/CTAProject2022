@@ -46,7 +46,8 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
     
     private let disposeBag = DisposeBag()
     
-    init() {
+    init(repository: HotpepperAPIRepositoryType = HotpepperAPIRepository()) {
+                
         $search.flatMapLatest { [weak self] text -> Observable<Event<ShopResponse>> in
             guard let me = self else { return .empty() }
             me.$hud.accept(.progress)
