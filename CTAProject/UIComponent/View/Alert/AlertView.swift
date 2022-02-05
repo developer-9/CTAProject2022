@@ -50,6 +50,8 @@ final class AlertView: UIView {
             guard let self = self else { return }
             self.removeFromSuperview()
         }.disposed(by: disposeBag)
+            guard let me = self else { return }
+            me.removeFromSuperview()
     }
     
     required init?(coder: NSCoder) {
