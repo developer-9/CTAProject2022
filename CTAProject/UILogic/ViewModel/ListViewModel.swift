@@ -24,6 +24,7 @@ protocol ListViewModelOutput {
     var dataSource: Observable<[ShopResponseSectionModel]> { get }
 }
 
+/// @mockable
 protocol ListViewModelType {
     var inputs: ListViewModelInput { get }
     var outputs: ListViewModelOutput { get }
