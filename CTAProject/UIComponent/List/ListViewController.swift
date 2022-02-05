@@ -116,7 +116,7 @@ extension ListViewController: UISearchBarDelegate {
     }
 }
 
-// MARK: - Enum
+// MARK: - Private Const
 
 extension ListViewController {
     private enum Const {

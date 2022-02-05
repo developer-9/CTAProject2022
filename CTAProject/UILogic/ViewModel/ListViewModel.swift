@@ -103,7 +103,7 @@ extension ListViewModel {
     }
 }
 
-// MARK: - Const
+// MARK: - Private Const
 
 extension ListViewModel {
     
