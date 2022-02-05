@@ -43,9 +43,21 @@ final class ListViewController: UIViewController {
         
         // MARK: Inputs
         
-        searchBar.rx.text.orEmpty
-            .bind(to: viewModel.inputs.searchText)
-            .disposed(by: disposeBag)
+        searchBar.searchTextField.rx.controlEvent(.editingChanged)
+            .observe(on: ConcurrentMainScheduler.instance)
+            .subscribe(onNext: { [weak self] in
+                guard let me = self else { return }
+                let text = me.searchBar.text ?? ""
+                me.viewModel.inputs.searchText.onNext(text)
+            }).disposed(by: disposeBag)
+        
+        searchBar.rx.searchButtonClicked
+            .observe(on: ConcurrentMainScheduler.instance)
+            .subscribe(onNext: { [weak self] in
+                guard let me = self else { return }
+                let keyword = me.searchBar.text ?? ""
+                me.viewModel.inputs.search.onNext(keyword)
+            }).disposed(by: disposeBag)
         
         // MARK: Outputs
         
@@ -81,7 +93,6 @@ final class ListViewController: UIViewController {
     private func configureSearchController() {
         searchBar.placeholder = L10n.searchBarPlaceholder
         searchBar.backgroundColor = UIColor.CTA.searchBarBackground
-        searchBar.delegate = self
     }
     
     private func configureTableView() {
@@ -104,15 +115,6 @@ final class ListViewController: UIViewController {
         
         view.addSubview(tableView)
         tableView.anchor(top: searchBar.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
-    }
-}
-
-// MARK: - UISearchBarDelegate
-
-extension ListViewController: UISearchBarDelegate {
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let searchText = searchBar.text else { return }
-        viewModel.inputs.search.onNext(searchText)
     }
 }
 
