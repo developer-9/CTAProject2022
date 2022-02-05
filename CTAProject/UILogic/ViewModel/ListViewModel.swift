@@ -51,7 +51,8 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
         $search.flatMapLatest { [weak self] text -> Observable<Event<ShopResponse>> in
             guard let me = self else { return .empty() }
             me.$hud.accept(.progress)
-            return APIClient.shared.request(HotPepperAPIService.SearchShopsRequest(keyword: text))
+            return repository.request(HotPepperAPIService.SearchShopsRequest(keyword: text))
+                .timeout(.seconds(5), scheduler: ConcurrentMainScheduler.instance)
                 .asObservable()
                 .materialize()
         }.subscribe { [weak self] event in
@@ -59,7 +60,7 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
             switch event.element {
             case .next(let response):
                 me.$dataSource.accept([.init(items: response.results.shop)])
-                me.$hide.accept(Void())
+                me.$hide.accept(())
             case .error(_):
                 me.$hud.accept(.error)
             case .completed, .none:
@@ -67,14 +68,18 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
             }
         }.disposed(by: disposeBag)
         
-        let _ = $searchText
-            .subscribe { [weak self] text in
-                guard let me = self,
-                      let text = text.element else { return }
-                let searchText = me.validCharacters(text: text)
-                guard let searchText = searchText else { return }
-                me.$validatedText.accept(searchText)
-            }.disposed(by: disposeBag)
+        $hud.delay(.milliseconds(700), scheduler: ConcurrentMainScheduler.instance)
+            .subscribe(onNext: { [weak self] _ in
+                guard let me = self else { return }
+                me.$hide.accept(())
+            }).disposed(by: disposeBag)
+
+        $searchText.subscribe(onNext: { [weak self] text in
+            guard let me = self else { return }
+            let validatedText = me.validatedCharacters(text: text)
+            guard let searchText = validatedText else { return }
+            me.$validatedText.accept(searchText)
+        }).disposed(by: disposeBag)
     }
 }
 
@@ -93,13 +98,13 @@ extension ListViewModel: ListViewModelType {
 // MARK: - Helpers
 
 extension ListViewModel {
-    func validCharacters(text: String) -> String? {
+    func validatedCharacters(text: String) -> String? {
         if text.count >= Const.Search.characterLimit {
             let validCharacters = String(text.prefix(Const.Search.validCharactersCount))
-            $alert.accept(Void())
+            $alert.accept(())
             return validCharacters
         } else {
-            return nil
+            return text
         }
     }
 }
