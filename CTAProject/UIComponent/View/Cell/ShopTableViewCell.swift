@@ -75,8 +75,6 @@ final class ShopTableViewCell: UITableViewCell {
         shopImageView.kf.setImage(with: item.logoImage)
         shopNameLabel.text = item.name
         budgetLabel.text = item.budget.name
-        guard let genre = item.genre,
-              let stationName = item.stationName else { return }
-        shopDetailLabel.text = "\(genre.name) / \(stationName)"
+        shopDetailLabel.text = L10n.shopDetailText(item.genre?.name ?? "", item.stationName ?? "")
     }
 }
