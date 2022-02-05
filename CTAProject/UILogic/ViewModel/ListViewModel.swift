@@ -78,8 +78,7 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
         $searchText.subscribe(onNext: { [weak self] text in
             guard let me = self else { return }
             let validatedText = me.validatedCharacters(text: text)
-            guard let searchText = validatedText else { return }
-            me.$validatedText.accept(searchText)
+            me.$validatedText.accept(validatedText)
         }).disposed(by: disposeBag)
     }
 }
@@ -99,7 +98,7 @@ extension ListViewModel: ListViewModelType {
 // MARK: - Helpers
 
 extension ListViewModel {
-    func validatedCharacters(text: String) -> String? {
+    func validatedCharacters(text: String) -> String {
         if text.count >= Const.Search.characterLimit {
             let validCharacters = String(text.prefix(Const.Search.validCharactersCount))
             $alert.accept(())
