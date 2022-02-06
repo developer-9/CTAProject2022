@@ -46,36 +46,40 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
     
     private let disposeBag = DisposeBag()
     
+    // MARK: Initializer
+    
     init(hotpepperAPIRepository: HotpepperAPIRepositoryType = HotpepperAPIRepository()) {
                 
-        $search.flatMapLatest { [weak self] text -> Observable<Event<ShopResponse>> in
-            guard let me = self else { return .empty() }
+        $search
+            .withUnretained(self)
+            .flatMapLatest { me, text -> Observable<Event<ShopResponse>> in
             me.$hud.accept(.progress)
             return hotpepperAPIRepository.request(HotPepperAPIService.SearchShopsRequest(keyword: text))
                 .timeout(.seconds(5), scheduler: ConcurrentMainScheduler.instance)
                 .asObservable()
                 .materialize()
-        }.subscribe { [weak self] event in
-            guard let me = self else { return }
-            switch event.element {
-            case .next(let response):
-                me.$dataSource.accept([.init(items: response.results.shop)])
-                me.$hide.accept(())
-            case .error(_):
-                me.$hud.accept(.error)
-            case .completed, .none:
-                break
-            }
-        }.disposed(by: disposeBag)
+            }.subscribe(with: self,
+                        onNext: { me, event in
+                switch event {
+                case .next(let response):
+                    me.$dataSource.accept([.init(items: response.results.shop)])
+                    me.$hide.accept(())
+                case .error(_):
+                    me.$hud.accept(.error)
+                case .completed:
+                    break
+                }
+            }).disposed(by: disposeBag)
         
         $hud.delay(.milliseconds(700), scheduler: ConcurrentMainScheduler.instance)
-            .subscribe(onNext: { [weak self] _ in
-                guard let me = self else { return }
+            .withUnretained(self)
+            .subscribe(onNext: { me, _ in
                 me.$hide.accept(())
             }).disposed(by: disposeBag)
 
-        $searchText.subscribe(onNext: { [weak self] text in
-            guard let me = self else { return }
+        $searchText
+            .withUnretained(self)
+            .subscribe(onNext: { me, text in
             let validatedText = me.validatedCharacters(text: text)
             me.$validatedText.accept(validatedText)
         }).disposed(by: disposeBag)

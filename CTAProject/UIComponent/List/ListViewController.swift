@@ -45,16 +45,16 @@ final class ListViewController: UIViewController {
         
         searchBar.searchTextField.rx.controlEvent(.editingChanged)
             .observe(on: ConcurrentMainScheduler.instance)
-            .subscribe(onNext: { [weak self] in
-                guard let me = self else { return }
+            .withUnretained(self)
+            .subscribe(onNext: { me, _ in
                 let text = me.searchBar.text ?? ""
                 me.viewModel.inputs.searchText.onNext(text)
             }).disposed(by: disposeBag)
         
         searchBar.rx.searchButtonClicked
             .observe(on: ConcurrentMainScheduler.instance)
-            .subscribe(onNext: { [weak self] in
-                guard let me = self else { return }
+            .withUnretained(self)
+            .subscribe(onNext: { me, _ in
                 let keyword = me.searchBar.text ?? ""
                 me.viewModel.inputs.search.onNext(keyword)
             }).disposed(by: disposeBag)
@@ -67,8 +67,8 @@ final class ListViewController: UIViewController {
         
         viewModel.outputs.alert
             .observe(on: ConcurrentMainScheduler.instance)
-            .subscribe(onNext: { [weak self] in
-                guard let me = self else { return }
+            .withUnretained(self)
+            .subscribe(onNext: { me, _ in
                 me.view.endEditing(true)
                 let alertView = AlertView()
                 me.view.addSubview(alertView)
