@@ -76,13 +76,11 @@ final class ListViewController: UIViewController {
             }).disposed(by: disposeBag)
         
         viewModel.outputs.hud
-            .observe(on: ConcurrentMainScheduler.instance)
-            .subscribe(onNext: { _ in
-                HUD.show(.progress)
+            .subscribe(onNext: { type in
+                HUD.show(type)
             }).disposed(by: disposeBag)
         
         viewModel.outputs.hide
-            .observe(on: ConcurrentMainScheduler.instance)
             .subscribe(onNext: { _ in
                 HUD.hide()
             }).disposed(by: disposeBag)
