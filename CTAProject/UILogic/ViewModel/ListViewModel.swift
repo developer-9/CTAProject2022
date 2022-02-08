@@ -63,6 +63,7 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
                 switch event {
                 case .next(let response):
                     me.$dataSource.accept([.init(items: response.results.shop)])
+                    me.$hide.accept(())
                 case .error(_):
                     me.$hud.accept(.error)
                 case .completed:
@@ -70,7 +71,9 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
                 }
             }).disposed(by: disposeBag)
         
-        $hud.delay(.milliseconds(700), scheduler: ConcurrentMainScheduler.instance)
+        $hud
+            .filter({ $0 == .error })
+            .delay(.milliseconds(700), scheduler: ConcurrentMainScheduler.instance)
             .withUnretained(self)
             .subscribe(onNext: { me, _ in
                 me.$hide.accept(())
