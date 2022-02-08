@@ -44,20 +44,14 @@ final class ListViewController: UIViewController {
         // MARK: Inputs
         
         searchBar.searchTextField.rx.controlEvent(.editingChanged)
-            .observe(on: ConcurrentMainScheduler.instance)
-            .withUnretained(self)
-            .subscribe(onNext: { me, _ in
-                let text = me.searchBar.text ?? ""
-                me.viewModel.inputs.searchText.onNext(text)
-            }).disposed(by: disposeBag)
+            .withLatestFrom(searchBar.rx.text.orEmpty)
+            .bind(to: viewModel.inputs.searchText)
+            .disposed(by: disposeBag)
         
         searchBar.rx.searchButtonClicked
-            .observe(on: ConcurrentMainScheduler.instance)
-            .withUnretained(self)
-            .subscribe(onNext: { me, _ in
-                let keyword = me.searchBar.text ?? ""
-                me.viewModel.inputs.search.onNext(keyword)
-            }).disposed(by: disposeBag)
+            .withLatestFrom(searchBar.rx.text.orEmpty)
+            .bind(to: viewModel.inputs.search)
+            .disposed(by: disposeBag)
         
         // MARK: Outputs
         
