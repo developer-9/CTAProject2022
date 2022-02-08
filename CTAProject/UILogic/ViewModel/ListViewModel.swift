@@ -63,7 +63,6 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
                 switch event {
                 case .next(let response):
                     me.$dataSource.accept([.init(items: response.results.shop)])
-                    me.$hide.accept(())
                 case .error(_):
                     me.$hud.accept(.error)
                 case .completed:
