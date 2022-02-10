@@ -72,7 +72,9 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
             }).disposed(by: disposeBag)
         
         $hud
-            .filter({ $0 == .error })
+            .filter({ contentType in
+                if case .error = contentType { return true } else { return false }
+            })
             .delay(.milliseconds(700), scheduler: ConcurrentMainScheduler.instance)
             .withUnretained(self)
             .subscribe(onNext: { me, _ in
