@@ -50,7 +50,7 @@ final class ListViewController: UIViewController {
         
         searchBar.rx.searchButtonClicked
             .withLatestFrom(searchBar.rx.text.orEmpty)
-            .bind(to: viewModel.inputs.search)
+            .bind(to: viewModel.inputs.searchButtonClicked)
             .disposed(by: disposeBag)
         
         // MARK: Outputs

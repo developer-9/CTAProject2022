@@ -13,7 +13,7 @@ import PKHUD
 
 protocol ListViewModelInput {
     var searchText: AnyObserver<String> { get }
-    var search: AnyObserver<String> { get }
+    var searchButtonClicked: AnyObserver<String> { get }
 }
 
 protocol ListViewModelOutput {
@@ -35,7 +35,7 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
     
     // MARK: Input
     @AnyObserverWrapper var searchText: AnyObserver<String>
-    @AnyObserverWrapper var search: AnyObserver<String>
+    @AnyObserverWrapper var searchButtonClicked: AnyObserver<String>
     
     //MARK: Output
     @PublishRelayWrapper var validatedText: Observable<String>
@@ -50,7 +50,7 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
     
     init(hotpepperAPIRepository: HotpepperAPIRepositoryType = HotpepperAPIRepository()) {
                 
-        $search
+        $searchButtonClicked
             .withUnretained(self)
             .flatMapLatest { me, text -> Observable<Event<ShopResponse>> in
             me.$hud.accept(.progress)
