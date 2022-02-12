@@ -1,6 +1,20 @@
 PODS:
+  - Alamofire (5.5.0)
+  - Differentiator (5.0.0)
   - Kingfisher (7.1.2)
+  - Moya/Core (15.0.0):
+    - Alamofire (~> 5.0)
+  - Moya/RxSwift (15.0.0):
+    - Moya/Core
+    - RxSwift (~> 6.0)
   - PKHUD (5.3.0)
+  - RxCocoa (6.2.0):
+    - RxRelay (= 6.2.0)
+    - RxSwift (= 6.2.0)
+  - RxDataSources (5.0.0):
+    - Differentiator (~> 5.0)
+    - RxCocoa (~> 6.0)
+    - RxSwift (~> 6.0)
   - RxRelay (6.2.0):
     - RxSwift (= 6.2.0)
   - RxSwift (6.2.0)
@@ -12,15 +26,23 @@ PODS:
 
 DEPENDENCIES:
   - Kingfisher (~> 7.0)
+  - Moya/RxSwift (~> 15.0)
   - PKHUD
+  - RxCocoa
+  - RxDataSources (~> 5.0)
   - SwiftGen
   - SwiftLint
   - Unio
 
 SPEC REPOS:
   trunk:
+    - Alamofire
+    - Differentiator
     - Kingfisher
+    - Moya
     - PKHUD
+    - RxCocoa
+    - RxDataSources
     - RxRelay
     - RxSwift
     - SwiftGen
@@ -28,14 +50,19 @@ SPEC REPOS:
     - Unio
 
 SPEC CHECKSUMS:
+  Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
+  Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
   Kingfisher: 44ed6a8504763f27bab46163adfac83f5deb240c
+  Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
+  RxCocoa: 4baf94bb35f2c0ab31bc0cb9f1900155f646ba42
+  RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
   RxRelay: e72dbfd157807478401ef1982e1c61c945c94b2f
   RxSwift: d356ab7bee873611322f134c5f9ef379fa183d8f
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
   SwiftLint: 06ac37e4d38c7068e0935bb30cda95f093bec761
   Unio: 6e57bd33dbcf38d281b0b420f75c0eae3bef0cf3
 
-PODFILE CHECKSUM: 1b3c86053bf8ca93158624ba172577c5011a3708
+PODFILE CHECKSUM: dbe5179f7b61004121e3c27df9be7127f11ae8fe
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.10.2

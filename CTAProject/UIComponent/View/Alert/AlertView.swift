@@ -6,17 +6,13 @@
 //
 
 import UIKit
-
-protocol AlertViewDelegate: AnyObject {
-    func handleDsimiss()
-}
+import RxSwift
+import RxCocoa
 
 final class AlertView: UIView {
     
     // MARK: - Properties
-    
-    weak var delegate: AlertViewDelegate?
-    
+        
     private let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -33,21 +29,28 @@ final class AlertView: UIView {
         return label
     }()
     
-    private lazy var closeButton: UIView = {
+    private let closeButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.CTA.baseYellow
         button.setTitle(L10n.closeButtonTitle, for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 14, weight: .semibold)
-        button.addTarget(self, action: #selector(handleDismiss), for: .touchUpInside)
         return button
     }()
+    
+    private let disposeBag = DisposeBag()
     
     // MARK: - Lifecycle
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
         configureUI()
+        
+        closeButton.rx.tap
+            .withUnretained(self)
+            .subscribe(onNext: { me, _ in
+                me.removeFromSuperview()
+            }).disposed(by: disposeBag)
     }
     
     required init?(coder: NSCoder) {
@@ -58,13 +61,6 @@ final class AlertView: UIView {
         super.layoutSubviews()
         containerView.setDimensions(height: frame.height / 4, width: frame.width - 40)
         closeButton.setDimensions(height: frame.height / 16, width: frame.width / 3)
-    }
-    
-    // MARK: - Actions
-    
-    @objc
-    private func handleDismiss() {
-        delegate?.handleDsimiss()
     }
     
     // MARK: - Helpers

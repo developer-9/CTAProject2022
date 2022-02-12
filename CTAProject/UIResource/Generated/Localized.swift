@@ -21,6 +21,10 @@ public enum L10n {
   public static let navigationBarTitle = L10n.tr("Localizable", "navigationBarTitle")
   /// キーワード
   public static let searchBarPlaceholder = L10n.tr("Localizable", "searchBarPlaceholder")
+  /// %@ / %@駅
+  public static func shopDetailText(_ p1: Any, _ p2: Any) -> String {
+    return L10n.tr("Localizable", "shopDetailText", String(describing: p1), String(describing: p2))
+  }
 }
 // swiftlint:enable function_parameter_count identifier_name line_length type_body_length
 
