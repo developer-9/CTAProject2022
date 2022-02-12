@@ -30,3 +30,9 @@ Mintでライブラリのバージョン管理をしているため、
 それを参考に実装に取り掛かる。  
 実装が完了したらPRをだし、ApproveをもらったらIssueをClose、  
 PRをマージする。  
+
+## Accel生リポジトリリンク一覧
+- [ともやん](https://github.com/Tomoya113/CTAProject2022)
+- [さかもっちゃん](https://github.com/developer-9/CTAProject2022)
+- [うっちー](https://github.com/Mayachiu/CTAProject2022)
+
