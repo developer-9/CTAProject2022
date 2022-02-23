@@ -53,18 +53,18 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
         $searchButtonClicked
             .withUnretained(self)
             .flatMapLatest { me, text -> Observable<Event<ShopResponse>> in
-            me.$hud.accept(.progress)
-            return hotpepperAPIRepository.request(HotPepperAPIService.SearchShopsRequest(keyword: text))
-                .timeout(.seconds(5), scheduler: ConcurrentMainScheduler.instance)
-                .asObservable()
-                .materialize()
+                me.$hud.accept(.progress)
+                return hotpepperAPIRepository.searchRequest(keyword: text)
+                    .timeout(.seconds(5), scheduler: ConcurrentMainScheduler.instance)
+                    .asObservable()
+                    .materialize()
             }.subscribe(with: self,
                         onNext: { me, event in
                 switch event {
                 case .next(let response):
                     me.$dataSource.accept([.init(items: response.results.shop)])
                     me.$hide.accept(())
-                case .error(_):
+                case .error:
                     me.$hud.accept(.error)
                 case .completed:
                     break
@@ -72,9 +72,7 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
             }).disposed(by: disposeBag)
         
         $hud
-            .filter({ contentType in
-                if case .error = contentType { return true } else { return false }
-            })
+            .filter { $0 == .error }
             .delay(.milliseconds(700), scheduler: ConcurrentMainScheduler.instance)
             .withUnretained(self)
             .subscribe(onNext: { me, _ in
@@ -84,9 +82,9 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
         $searchText
             .withUnretained(self)
             .subscribe(onNext: { me, text in
-            let validatedText = me.validatedCharacters(text: text)
-            me.$validatedText.accept(validatedText)
-        }).disposed(by: disposeBag)
+                let validatedText = me.validatedCharacters(text: text)
+                me.$validatedText.accept(validatedText)
+            }).disposed(by: disposeBag)
     }
 }
 
