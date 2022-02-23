@@ -9,19 +9,20 @@ import Foundation
 
 // MARK: - ShopResponse
 
-struct ShopResponse: Decodable {
+struct ShopResponse: Decodable, Equatable {
     let results: Results
 }
 
 // MARK: - Result
 
-struct Results: Decodable {
+struct Results: Decodable, Equatable {
     let shop: [Shop]
 }
 
 // MARK: - Shop
 
-struct Shop: Decodable {
+struct Shop: Decodable, Equatable {
+
     let id: String
     let name: String
     let logoImage: URL?
@@ -32,12 +33,12 @@ struct Shop: Decodable {
 
 // MARK: - Genre
 
-struct Genre: Decodable {
+struct Genre: Decodable, Equatable {
     let name: String
 }
 
 // MARK: - Budget
 
-struct Budget: Decodable {
+struct Budget: Decodable, Equatable {
     let name: String
 }
