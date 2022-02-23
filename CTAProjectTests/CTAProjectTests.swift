@@ -5,31 +5,96 @@
 //  Created by 田中 颯志 on 2021/12/29.
 //
 @testable import CTAProject
+import RxSwift
 import XCTest
 
 class CTAProjectTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    // MARK: - Properties
+
+    var dependency: Dependency!
+
+    // MARK: - TestMethods
+
+    /// searchButtonを押下した時のAPI取得成功時のテスト
+    func test_searchButtonClicked_success() {
+        dependency = Dependency()
+        let testTarget = dependency.testTarget
+        let repository = dependency.hotpepperApiRepositoryMock
+        let hud = WatchStream(testTarget.outputs.hud)
+        let datasource = WatchStream(testTarget.outputs.dataSource)
+        let hide = WatchStream(testTarget.outputs.hide)
+        var keyword: String?
+
+        XCTAssertEqual(repository.searchRequestCallCount, 0, "searchRequestメソッドが呼ばれていないか")
+        repository.searchRequestHandler = { text in
+            keyword = text
+            return TestMockData.singleShopResponse()
+        }
+
+        testTarget.inputs.searchButtonClicked.onNext(TestMockData.mockText)
+        XCTAssertEqual(repository.searchRequestCallCount, 1, "searchRequestメソッドが一回呼ばれているか")
+        XCTAssertEqual(hud.value, .progress, "プログレスHUDが表示されているか")
+        XCTAssertEqual(keyword, TestMockData.mockText, "検索文字を流せているか")
+        XCTAssertEqual(datasource.value?[0].items, TestMockData.fetchShops(), "モックデータの検索結果が返ってくるか")
+        XCTAssertNotNil(hide.value, "HUDが非表示になっているか")
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    /// searchButtonを押下した時のAPI取得失敗時のテスト
+    func test_searchButtonClicked_failure() {
+        dependency = Dependency()
+        let testTarget = dependency.testTarget
+        let repository = dependency.hotpepperApiRepositoryMock
+        let hud = WatchStream(testTarget.outputs.hud)
+        let hide = WatchStream(testTarget.outputs.hide)
+
+        XCTAssertEqual(repository.searchRequestCallCount, 0, "searchRequestメソッドが呼ばれていないか")
+        repository.searchRequestHandler = { _ in
+            return Single.error(APIError.mock)
+        }
+
+        testTarget.inputs.searchButtonClicked.onNext(TestMockData.mockText)
+        XCTAssertEqual(repository.searchRequestCallCount, 1, "searchRequestメソッドが一回呼ばれているか")
+        XCTAssertEqual(hud.value, .error, "エラーHUDが表示されること")
+        XCTAssertNil(hide.value, "HUDが非表示になっているか")
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    /// 50文字以下のテキスト入力した場合のテスト
+    func test_inputSearchText_below50Characters() {
+        dependency = Dependency()
+        let testTarget = dependency.testTarget
+        let validatedText = WatchStream(testTarget.outputs.validatedText)
+        let alert = WatchStream(testTarget.outputs.alert)
+
+        testTarget.inputs.searchText.onNext(TestMockData.mockText)
+        XCTAssertEqual(validatedText.value, TestMockData.mockText, "文字列がそのまま返されているか")
+        XCTAssertNil(alert.value, "アラートが表示されないか")
     }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    /// 50文字以上のテキストを入力した場合のテスト
+    func test_inputSeachText_over50Characters() {
+        dependency = Dependency()
+        let testTarget = dependency.testTarget
+        let over50Characters = String(repeating: "a", count: 51)
+        let validatedText = WatchStream(testTarget.outputs.validatedText)
+        let alert = WatchStream(testTarget.outputs.alert)
+
+        testTarget.inputs.searchText.onNext(over50Characters)
+        XCTAssertEqual(validatedText.value?.count, 50, "50文字以内に加工されているか")
+        XCTAssertNotNil(alert.value, "50文字以上でアラートが表示されるか")
+    }
+}
+
+// MARK: - DependencyInjection
+
+extension CTAProjectTests {
+    struct Dependency {
+        let testTarget: ListViewModel
+        let hotpepperApiRepositoryMock: HotpepperAPIRepositoryTypeMock
+
+        init() {
+            self.hotpepperApiRepositoryMock = HotpepperAPIRepositoryTypeMock()
+            testTarget = ListViewModel(hotpepperAPIRepository: hotpepperApiRepositoryMock)
         }
     }
-
 }
