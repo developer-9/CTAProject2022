@@ -18,6 +18,9 @@ target 'CTAProject' do
   target 'CTAProjectTests' do
     inherit! :search_paths
     # Pods for testing
+
+  pod 'RxTest'	
+
   end
 
   target 'CTAProjectUITests' do
