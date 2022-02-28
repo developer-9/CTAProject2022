@@ -11,5 +11,4 @@ import Moya
 enum APIError: Error {
     case decode
     case response(MoyaError)
-    case mock
 }

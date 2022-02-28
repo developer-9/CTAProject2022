@@ -50,7 +50,7 @@ class CTAProjectTests: XCTestCase {
 
         XCTAssertEqual(repository.searchRequestCallCount, 0, "searchRequestメソッドが呼ばれていないか")
         repository.searchRequestHandler = { _ in
-            return Single.error(APIError.mock)
+            return Single.error(MockError.error)
         }
 
         testTarget.inputs.searchButtonClicked.onNext(TestMockData.mockText)
