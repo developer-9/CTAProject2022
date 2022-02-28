@@ -23,32 +23,32 @@ extension HUDContentType: Equatable {
         case .image:
             if case .image = rhs { return true } else { return false }
 
-        case .rotatingImage(let optional):
-            if case .rotatingImage(optional) = rhs { return true } else { return false }
+        case .rotatingImage:
+            if case .rotatingImage = rhs { return true } else { return false }
 
-        case .labeledSuccess(let title, let subtitle):
-            if case .labeledSuccess(title: title, subtitle: subtitle) = rhs { return true } else { return false }
+        case .labeledSuccess:
+            if case .labeledSuccess = rhs { return true } else { return false }
 
-        case .labeledError(let title, let subtitle):
-            if case .labeledError(title: title, subtitle: subtitle) = rhs { return true } else { return false }
+        case .labeledError:
+            if case .labeledError = rhs { return true } else { return false }
 
-        case .labeledProgress(let title, let subtitle):
-            if case .labeledProgress(title: title, subtitle: subtitle) = rhs { return true } else { return false }
+        case .labeledProgress:
+            if case .labeledProgress = rhs { return true } else { return false }
 
-        case .labeledImage(let image, let title, let subtitle):
-            if case .labeledImage(image: image, title: title, subtitle: subtitle) = rhs { return true } else { return false }
+        case .labeledImage:
+            if case .labeledImage = rhs { return true } else { return false }
 
-        case .labeledRotatingImage(let image, let title, let subtitle):
-            if case .labeledRotatingImage(image: image, title: title, subtitle: subtitle) = rhs { return true } else { return false }
+        case .labeledRotatingImage:
+            if case .labeledRotatingImage = rhs { return true } else { return false }
 
-        case .label(let optional):
-            if case .label(optional) = rhs { return true } else { return false }
+        case .label:
+            if case .label = rhs { return true } else { return false }
 
         case .systemActivity:
             if case .systemActivity = rhs { return true } else { return false }
 
-        case .customView(let view):
-            if case .customView(view: view) = rhs { return true } else { return false }
+        case .customView:
+            if case .customView = rhs { return true } else { return false }
         }
     }
 }
