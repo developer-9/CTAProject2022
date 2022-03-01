@@ -49,28 +49,25 @@ final class ListViewModel: ListViewModelInput, ListViewModelOutput {
     // MARK: Initializer
     
     init(hotpepperAPIRepository: HotpepperAPIRepositoryType = HotpepperAPIRepository()) {
-                
+        
         $searchButtonClicked
             .withUnretained(self)
-            .flatMapLatest { me, text -> Observable<Event<ShopResponse>> in
+            .flatMapLatest { me, text -> Single<ShopResponse?> in
                 me.$hud.accept(.progress)
                 return hotpepperAPIRepository.searchRequest(keyword: text)
                     .timeout(.seconds(5), scheduler: ConcurrentMainScheduler.instance)
-                    .asObservable()
-                    .materialize()
+                    .map(Optional.some)
+                    .catchAndReturn(nil)
             }.subscribe(with: self,
-                        onNext: { me, event in
-                switch event {
-                case .next(let response):
-                    me.$dataSource.accept([.init(items: response.results.shop)])
-                    me.$hide.accept(())
-                case .error:
+                        onNext: { me, response in
+                guard let shop = response?.results.shop else {
                     me.$hud.accept(.error)
-                case .completed:
-                    break
+                    return
                 }
+                me.$dataSource.accept([.init(items: shop)])
+                me.$hide.accept(())
             }).disposed(by: disposeBag)
-        
+                    
         $hud
             .filter { $0 == .error }
             .delay(.milliseconds(700), scheduler: ConcurrentMainScheduler.instance)
