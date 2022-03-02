@@ -15,18 +15,13 @@ enum TestMockData {
         let results = Results(shop: shops)
         return ShopResponse(results: results)
     }
-
-    static func singleShopResponse() -> Single<ShopResponse> {
-        return Single.just(fetchShopResponse())
-    }
-
-    static func fetchShopsDatasource() -> [ShopResponseSectionModel] {
-        let items = fetchShopResponse().results.shop
-        return [ShopResponseSectionModel(items: items)]
-    }
-
+    
     static func fetchShops() -> [Shop] {
         return fetchShopResponse().results.shop
+    }
+    
+    static func fetchSingleShops() -> Single<[Shop]> {
+        return Single.just(fetchShops())
     }
 }
 

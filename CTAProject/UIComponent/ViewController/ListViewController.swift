@@ -18,15 +18,15 @@ final class ListViewController: UIViewController {
     private let tableView = UITableView()
     private let searchBar = UISearchBar()
 
-    private let viewModel: ListViewModelType
+    private let viewStream: ListViewModelStreamType
     private var dataSource: RxTableViewSectionedReloadDataSource<ShopResponseSectionModel>?
 
     private let disposeBag = DisposeBag()
 
     // MARK: - Lifecycle
 
-    init(viewModel: ListViewModelType = ListViewModel()) {
-        self.viewModel = viewModel
+    init(viewStream: ListViewModelStreamType = ListViewStream()) {
+        self.viewStream = viewStream
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -44,22 +44,24 @@ final class ListViewController: UIViewController {
         // MARK: Inputs
 
         searchBar.searchTextField.rx.controlEvent(.editingChanged)
-            .withLatestFrom(searchBar.rx.text.orEmpty)
-            .bind(to: viewModel.inputs.searchText)
+            .bind(to: viewStream.input.editingChanged)
             .disposed(by: disposeBag)
-
+        
         searchBar.rx.searchButtonClicked
-            .withLatestFrom(searchBar.rx.text.orEmpty)
-            .bind(to: viewModel.inputs.searchButtonClicked)
+            .bind(to: viewStream.input.searchButtonClicked)
+            .disposed(by: disposeBag)
+        
+        searchBar.rx.text.orEmpty
+            .bind(to: viewStream.input.searchText)
             .disposed(by: disposeBag)
 
         // MARK: Outputs
 
-        viewModel.outputs.validatedText
+        viewStream.output.validatedText
             .bind(to: searchBar.rx.text)
             .disposed(by: disposeBag)
 
-        viewModel.outputs.alert
+        viewStream.output.alert
             .observe(on: ConcurrentMainScheduler.instance)
             .withUnretained(self)
             .subscribe(onNext: { me, _ in
@@ -69,18 +71,18 @@ final class ListViewController: UIViewController {
                 alertView.fillSuperView()
             }).disposed(by: disposeBag)
 
-        viewModel.outputs.hud
+        viewStream.output.hud
             .subscribe(onNext: { type in
                 HUD.show(type)
             }).disposed(by: disposeBag)
 
-        viewModel.outputs.hide
+        viewStream.output.hide
             .subscribe(onNext: { _ in
                 HUD.hide()
             }).disposed(by: disposeBag)
 
         guard let dataSource = dataSource else { return }
-        viewModel.outputs.dataSource
+        viewStream.output.dataSource
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
     }

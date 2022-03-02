@@ -21,18 +21,19 @@ class CTAProjectTests: XCTestCase {
         dependency = Dependency()
         let testTarget = dependency.testTarget
         let repository = dependency.hotpepperApiRepositoryMock
-        let hud = WatchStream(testTarget.outputs.hud)
-        let datasource = WatchStream(testTarget.outputs.dataSource)
-        let hide = WatchStream(testTarget.outputs.hide)
+        let hud = WatchStream(testTarget.output.hud)
+        let datasource = WatchStream(testTarget.output.dataSource)
+        let hide = WatchStream(testTarget.output.hide)
         var keyword: String?
 
         XCTAssertEqual(repository.searchRequestCallCount, 0, "searchRequestメソッドが呼ばれていないか")
         repository.searchRequestHandler = { text in
             keyword = text
-            return TestMockData.singleShopResponse()
+            return TestMockData.fetchSingleShops()
         }
 
-        testTarget.inputs.searchButtonClicked.onNext(TestMockData.mockText)
+        testTarget.input.searchText.onNext(TestMockData.mockText)
+        testTarget.input.searchButtonClicked.onNext(())
         XCTAssertEqual(repository.searchRequestCallCount, 1, "searchRequestメソッドが一回呼ばれているか")
         XCTAssertEqual(hud.value, .progress, "プログレスHUDが表示されているか")
         XCTAssertEqual(keyword, TestMockData.mockText, "検索文字を流せているか")
@@ -45,15 +46,16 @@ class CTAProjectTests: XCTestCase {
         dependency = Dependency()
         let testTarget = dependency.testTarget
         let repository = dependency.hotpepperApiRepositoryMock
-        let hud = WatchStream(testTarget.outputs.hud)
-        let hide = WatchStream(testTarget.outputs.hide)
+        let hud = WatchStream(testTarget.output.hud)
+        let hide = WatchStream(testTarget.output.hide)
 
         XCTAssertEqual(repository.searchRequestCallCount, 0, "searchRequestメソッドが呼ばれていないか")
         repository.searchRequestHandler = { _ in
             return Single.error(MockError.error)
         }
-
-        testTarget.inputs.searchButtonClicked.onNext(TestMockData.mockText)
+        
+        testTarget.input.searchText.onNext(TestMockData.mockText)
+        testTarget.input.searchButtonClicked.onNext(())
         XCTAssertEqual(repository.searchRequestCallCount, 1, "searchRequestメソッドが一回呼ばれているか")
         XCTAssertEqual(hud.value, .error, "エラーHUDが表示されること")
         XCTAssertNil(hide.value, "HUDが非表示になっているか")
@@ -63,10 +65,11 @@ class CTAProjectTests: XCTestCase {
     func test_inputSearchText_below50Characters() {
         dependency = Dependency()
         let testTarget = dependency.testTarget
-        let validatedText = WatchStream(testTarget.outputs.validatedText)
-        let alert = WatchStream(testTarget.outputs.alert)
+        let validatedText = WatchStream(testTarget.output.validatedText)
+        let alert = WatchStream(testTarget.output.alert)
 
-        testTarget.inputs.searchText.onNext(TestMockData.mockText)
+        testTarget.input.searchText.onNext(TestMockData.mockText)
+        testTarget.input.editingChanged.onNext(())
         XCTAssertEqual(validatedText.value, TestMockData.mockText, "文字列がそのまま返されているか")
         XCTAssertNil(alert.value, "アラートが表示されないか")
     }
@@ -76,10 +79,11 @@ class CTAProjectTests: XCTestCase {
         dependency = Dependency()
         let testTarget = dependency.testTarget
         let over50Characters = String(repeating: "a", count: 51)
-        let validatedText = WatchStream(testTarget.outputs.validatedText)
-        let alert = WatchStream(testTarget.outputs.alert)
+        let validatedText = WatchStream(testTarget.output.validatedText)
+        let alert = WatchStream(testTarget.output.alert)
 
-        testTarget.inputs.searchText.onNext(over50Characters)
+        testTarget.input.searchText.onNext(over50Characters)
+        testTarget.input.editingChanged.onNext(())
         XCTAssertEqual(validatedText.value?.count, 50, "50文字以内に加工されているか")
         XCTAssertNotNil(alert.value, "50文字以上でアラートが表示されるか")
     }
@@ -89,12 +93,12 @@ class CTAProjectTests: XCTestCase {
 
 extension CTAProjectTests {
     struct Dependency {
-        let testTarget: ListViewModel
+        let testTarget: ListViewStream
         let hotpepperApiRepositoryMock: HotpepperAPIRepositoryTypeMock
 
         init() {
             self.hotpepperApiRepositoryMock = HotpepperAPIRepositoryTypeMock()
-            testTarget = ListViewModel(hotpepperAPIRepository: hotpepperApiRepositoryMock)
+            testTarget = ListViewStream(hotpepperApiRepository: hotpepperApiRepositoryMock)
         }
     }
 }

@@ -11,7 +11,7 @@ import RxSwift
 
 /// @mockable
 protocol HotpepperAPIRepositoryType {
-    func searchRequest(keyword: String) -> Single<ShopResponse>
+    func searchRequest(keyword: String) -> Single<[Shop]>
 }
 
 
@@ -28,15 +28,16 @@ final class HotpepperAPIRepository: HotpepperAPIRepositoryType {
     }()
 
     // MARK: - Functions
-
-    func searchRequest(keyword: String) -> Single<ShopResponse> {
-        return Single<ShopResponse>.create { [self, searchProvider] result in
+    
+    func searchRequest(keyword: String) -> Single<[Shop]> {
+        return Single<[Shop]>.create { [self, searchProvider] result in
             searchProvider.request(.init(keyword: keyword)) { [decoder] moyaResult in
                 switch moyaResult {
                 case .success(let response):
                     do {
                         let shopResponse = try decoder.decode(ShopResponse.self, from: response.data)
-                        result(.success(shopResponse))
+                        let shops = shopResponse.results.shop
+                        result(.success(shops))
                     } catch {
                         result(.failure(APIError.decode))
                     }
