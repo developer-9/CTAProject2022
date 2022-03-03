@@ -20,7 +20,7 @@ final class ListViewStream: UnioStream<ListViewStream>, ListViewModelStreamType 
     
     // MARK: - Initializer
     
-    convenience init(hotpepperApiRepository: HotpepperAPIRepositoryType = HotpepperAPIRepository()) {
+    convenience init(hotpepperApiRepository: HotpepperRepositoryType = HotpepperRepository()) {
         self.init(input: Input(), state: State(), extra: Extra(hotpepperApiRepository: hotpepperApiRepository))
     }
     
@@ -93,9 +93,9 @@ extension ListViewStream {
     // MARK: - Extra
     
     struct Extra: ExtraType {
-        let hotpepperApiRepository: HotpepperAPIRepositoryType
+        let hotpepperApiRepository: HotpepperRepositoryType
         
-        init(hotpepperApiRepository: HotpepperAPIRepositoryType) {
+        init(hotpepperApiRepository: HotpepperRepositoryType) {
             self.hotpepperApiRepository = hotpepperApiRepository
         }
     }

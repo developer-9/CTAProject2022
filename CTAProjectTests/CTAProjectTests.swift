@@ -20,7 +20,7 @@ class CTAProjectTests: XCTestCase {
     func test_searchButtonClicked_success() {
         dependency = Dependency()
         let testTarget = dependency.testTarget
-        let repository = dependency.hotpepperApiRepositoryMock
+        let repository = dependency.hotpepperRepositoryMock
         let hud = WatchStream(testTarget.output.hud)
         let datasource = WatchStream(testTarget.output.dataSource)
         let hide = WatchStream(testTarget.output.hide)
@@ -45,7 +45,7 @@ class CTAProjectTests: XCTestCase {
     func test_searchButtonClicked_failure() {
         dependency = Dependency()
         let testTarget = dependency.testTarget
-        let repository = dependency.hotpepperApiRepositoryMock
+        let repository = dependency.hotpepperRepositoryMock
         let hud = WatchStream(testTarget.output.hud)
         let hide = WatchStream(testTarget.output.hide)
 
@@ -94,11 +94,11 @@ class CTAProjectTests: XCTestCase {
 extension CTAProjectTests {
     struct Dependency {
         let testTarget: ListViewStream
-        let hotpepperApiRepositoryMock: HotpepperAPIRepositoryTypeMock
+        let hotpepperRepositoryMock: HotpepperRepositoryTypeMock
 
         init() {
-            self.hotpepperApiRepositoryMock = HotpepperAPIRepositoryTypeMock()
-            testTarget = ListViewStream(hotpepperApiRepository: hotpepperApiRepositoryMock)
+            self.hotpepperRepositoryMock = HotpepperRepositoryTypeMock()
+            testTarget = ListViewStream(hotpepperApiRepository: hotpepperRepositoryMock)
         }
     }
 }

@@ -10,12 +10,12 @@ import Moya
 import RxSwift
 
 /// @mockable
-protocol HotpepperAPIRepositoryType {
+protocol HotpepperRepositoryType {
     func searchRequest(keyword: String) -> Single<[Shop]>
 }
 
 
-final class HotpepperAPIRepository: HotpepperAPIRepositoryType {
+final class HotpepperRepository: HotpepperRepositoryType {
 
     // MARK: - Properties
 
