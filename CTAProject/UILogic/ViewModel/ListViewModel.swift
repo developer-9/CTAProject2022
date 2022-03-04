@@ -31,22 +31,28 @@ final class ListViewStream: UnioStream<ListViewStream>, ListViewModelStreamType 
         
         input.searchButtonClicked
             .withLatestFrom(input.searchText)
-            .flatMapLatest { text -> Single<[Shop]> in
+            .flatMapLatest { text -> Single<[Shop]?> in
                 state.hud.accept(.progress)
                 return extra.hotpepperApiRepository.searchRequest(keyword: text)
                     .timeout(.seconds(5), scheduler: ConcurrentMainScheduler.instance)
+                    .map(Optional.some)
+                    .catch { error in
+                        state.hud.accept(.error)
+                        return .just(nil)
+                    }
             }.subscribe(onNext: { shops in
+                guard let shops = shops else { return }
                 state.datasource.accept([.init(items: shops)])
                 state.hide.accept(())
-            }, onError: { _ in
-                state.hud.accept(.error)
             }).disposed(by: disposeBag)
         
         input.editingChanged
             .withLatestFrom(input.searchText)
+            .filter { $0.count > Const.Search.characterLimit }
             .subscribe(onNext: { text in
-                let validatedText = validatedCharacters(text: text, state: state)
+                let validatedText = "\(text.prefix(Const.Search.validCharactersCount))"
                 state.validatedText.accept(validatedText)
+                state.alert.accept(())
             }).disposed(by: disposeBag)
         
         state.hud
@@ -97,20 +103,6 @@ extension ListViewStream {
         
         init(hotpepperApiRepository: HotpepperRepositoryType) {
             self.hotpepperApiRepository = hotpepperApiRepository
-        }
-    }
-}
-
-// MARK: - Helpers
-
-extension ListViewStream {
-    private static func validatedCharacters(text: String, state: State) -> String {
-        if text.count >= Const.Search.characterLimit {
-            let validCharacters = String(text.prefix(Const.Search.validCharactersCount))
-            state.alert.accept(())
-            return validCharacters
-        } else {
-            return text
         }
     }
 }

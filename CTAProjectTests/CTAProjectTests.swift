@@ -61,19 +61,6 @@ class CTAProjectTests: XCTestCase {
         XCTAssertNil(hide.value, "HUDが非表示になっているか")
     }
 
-    /// 50文字以下のテキスト入力した場合のテスト
-    func test_inputSearchText_below50Characters() {
-        dependency = Dependency()
-        let testTarget = dependency.testTarget
-        let validatedText = WatchStream(testTarget.output.validatedText)
-        let alert = WatchStream(testTarget.output.alert)
-
-        testTarget.input.searchText.onNext(TestMockData.mockText)
-        testTarget.input.editingChanged.onNext(())
-        XCTAssertEqual(validatedText.value, TestMockData.mockText, "文字列がそのまま返されているか")
-        XCTAssertNil(alert.value, "アラートが表示されないか")
-    }
-
     /// 50文字以上のテキストを入力した場合のテスト
     func test_inputSeachText_over50Characters() {
         dependency = Dependency()
