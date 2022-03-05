@@ -46,11 +46,11 @@ final class ListViewController: UIViewController {
         searchBar.searchTextField.rx.controlEvent(.editingChanged)
             .bind(to: viewStream.input.editingChanged)
             .disposed(by: disposeBag)
-        
+
         searchBar.rx.searchButtonClicked
             .bind(to: viewStream.input.searchButtonClicked)
             .disposed(by: disposeBag)
-        
+
         searchBar.rx.text.orEmpty
             .bind(to: viewStream.input.searchText)
             .disposed(by: disposeBag)

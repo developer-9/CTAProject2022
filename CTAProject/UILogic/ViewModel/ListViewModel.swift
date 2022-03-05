@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import RxSwift
-import RxCocoa
 import PKHUD
+import RxCocoa
+import RxSwift
 import Unio
 
 protocol ListViewModelStreamType: AnyObject {
@@ -17,18 +17,18 @@ protocol ListViewModelStreamType: AnyObject {
 }
 
 final class ListViewStream: UnioStream<ListViewStream>, ListViewModelStreamType {
-    
+
     // MARK: - Initializer
-    
+
     convenience init(hotpepperApiRepository: HotpepperRepositoryType = HotpepperRepository()) {
         self.init(input: Input(), state: State(), extra: Extra(hotpepperApiRepository: hotpepperApiRepository))
     }
-    
+
     static func bind(from dependency: Dependency<Input, State, Extra>, disposeBag: DisposeBag) -> Output {
         let input = dependency.inputObservables
         let state = dependency.state
         let extra = dependency.extra
-        
+
         input.searchButtonClicked
             .withLatestFrom(input.searchText)
             .flatMapLatest { text -> Single<[Shop]?> in
@@ -45,7 +45,7 @@ final class ListViewStream: UnioStream<ListViewStream>, ListViewModelStreamType 
                 state.datasource.accept([.init(items: shops)])
                 state.hide.accept(())
             }).disposed(by: disposeBag)
-        
+
         input.editingChanged
             .withLatestFrom(input.searchText)
             .filter { $0.count > Const.Search.characterLimit }
@@ -54,30 +54,30 @@ final class ListViewStream: UnioStream<ListViewStream>, ListViewModelStreamType 
                 state.validatedText.accept(validatedText)
                 state.alert.accept(())
             }).disposed(by: disposeBag)
-        
+
         state.hud
             .filter { $0 == .error }
             .delay(.milliseconds(700), scheduler: ConcurrentMainScheduler.instance)
             .subscribe(onNext: { _ in
                 state.hide.accept(())
             }).disposed(by: disposeBag)
-        
+
         return Output(validatedText: state.validatedText.asObservable(), alert: state.alert.asObservable(), hud: state.hud.asObservable(), hide: state.hide.asObservable(), dataSource: state.datasource.asObservable())
     }
 }
 
 extension ListViewStream {
-    
+
     // MARK: - Input
-    
+
     struct Input: InputType {
         let searchText = PublishRelay<String>()
         let searchButtonClicked = PublishRelay<Void>()
         let editingChanged = PublishRelay<Void>()
     }
-    
+
     // MARK: - Output
-    
+
     struct Output: OutputType {
         let validatedText: Observable<String>
         let alert: Observable<Void>
@@ -85,9 +85,9 @@ extension ListViewStream {
         let hide: Observable<Void>
         let dataSource: Observable<[ShopResponseSectionModel]>
     }
-    
+
     // MARK: - State
-    
+
     struct State: StateType {
         let validatedText = PublishRelay<String>()
         let alert = PublishRelay<Void>()
@@ -95,12 +95,12 @@ extension ListViewStream {
         let hide = PublishRelay<Void>()
         let datasource = BehaviorRelay<[ShopResponseSectionModel]>(value: [])
     }
-    
+
     // MARK: - Extra
-    
+
     struct Extra: ExtraType {
         let hotpepperApiRepository: HotpepperRepositoryType
-        
+
         init(hotpepperApiRepository: HotpepperRepositoryType) {
             self.hotpepperApiRepository = hotpepperApiRepository
         }

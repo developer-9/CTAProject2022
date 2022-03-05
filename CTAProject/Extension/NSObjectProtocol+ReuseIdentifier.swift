@@ -8,7 +8,7 @@
 import Foundation
 
 extension NSObjectProtocol {
-    
+
     static var reuseIdentifier: String {
         return String(describing: self)
     }

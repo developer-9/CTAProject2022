@@ -53,7 +53,7 @@ class CTAProjectTests: XCTestCase {
         repository.searchRequestHandler = { _ in
             return Single.error(MockError.error)
         }
-        
+
         testTarget.input.searchText.onNext(TestMockData.mockText)
         testTarget.input.searchButtonClicked.onNext(())
         XCTAssertEqual(repository.searchRequestCallCount, 1, "searchRequestメソッドが一回呼ばれているか")

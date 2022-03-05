@@ -15,11 +15,11 @@ enum TestMockData {
         let results = Results(shop: shops)
         return ShopResponse(results: results)
     }
-    
+
     static func fetchShops() -> [Shop] {
         return fetchShopResponse().results.shop
     }
-    
+
     static func fetchSingleShops() -> Single<[Shop]> {
         return Single.just(fetchShops())
     }

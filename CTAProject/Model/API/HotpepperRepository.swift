@@ -28,7 +28,7 @@ final class HotpepperRepository: HotpepperRepositoryType {
     }()
 
     // MARK: - Functions
-    
+
     func searchRequest(keyword: String) -> Single<[Shop]> {
         return Single<[Shop]>.create { [self, searchProvider] result in
             searchProvider.request(.init(keyword: keyword)) { [decoder] moyaResult in
