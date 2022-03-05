@@ -29,3 +29,5 @@ Thumbs.db
 vendor/bundle
 *.generated.swift
 /Pods/
+MockResults.swift
+Key.swift

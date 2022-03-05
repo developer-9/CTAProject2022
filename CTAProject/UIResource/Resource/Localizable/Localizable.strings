@@ -1,3 +1,9 @@
 
 // MARK: - サンプル
-"LocalizeSample" = "ローカライズサンプル";
+"navigationBarTitle" = "グルスポ";
+"listTabBarTitle" = "リスト";
+"favoriteTabBarTitle" = "お気に入り";
+"searchBarPlaceholder" = "キーワード";
+"characterAlertMesssage" = "文字数が50文字を超過しています。";
+"closeButtonTitle" = "閉じる";
+"shopDetailText" = "%@ / %@駅";

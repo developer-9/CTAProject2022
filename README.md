@@ -12,9 +12,15 @@
 4. 以下のセットアップ手順で環境構築
 
 ## セットアップ
+bundler管理なのでbundlerを入れておく。  
+`$ gem install bundler`  
+sudo必要かも  
+
+Mintでライブラリのバージョン管理をしているため、  
+以下のコマンドでmintのインストールを済ませておく  
+`$ brew install mint`  
+
 `make-setup`  
-or  
-`make-setup-b` ( bundler管理の人はこっちを使う )  
 で  
 `xcodegen generate`と`pod install`、 `open`が実行される  
 ## 開発ルール
@@ -24,3 +30,9 @@ or
 それを参考に実装に取り掛かる。  
 実装が完了したらPRをだし、ApproveをもらったらIssueをClose、  
 PRをマージする。  
+
+## Accel生リポジトリリンク一覧
+- [ともやん](https://github.com/Tomoya113/CTAProject2022)
+- [さかもっちゃん](https://github.com/developer-9/CTAProject2022)
+- [うっちー](https://github.com/Mayachiu/CTAProject2022)
+

@@ -9,8 +9,22 @@ import Foundation
 
 // swiftlint:disable function_parameter_count identifier_name line_length type_body_length
 public enum L10n {
-  /// ローカライズサンプル
-  public static let localizeSample = L10n.tr("Localizable", "LocalizeSample")
+  /// 文字数が50文字を超過しています。
+  public static let characterAlertMesssage = L10n.tr("Localizable", "characterAlertMesssage")
+  /// 閉じる
+  public static let closeButtonTitle = L10n.tr("Localizable", "closeButtonTitle")
+  /// お気に入り
+  public static let favoriteTabBarTitle = L10n.tr("Localizable", "favoriteTabBarTitle")
+  /// リスト
+  public static let listTabBarTitle = L10n.tr("Localizable", "listTabBarTitle")
+  /// グルスポ
+  public static let navigationBarTitle = L10n.tr("Localizable", "navigationBarTitle")
+  /// キーワード
+  public static let searchBarPlaceholder = L10n.tr("Localizable", "searchBarPlaceholder")
+  /// %@ / %@駅
+  public static func shopDetailText(_ p1: Any, _ p2: Any) -> String {
+    return L10n.tr("Localizable", "shopDetailText", String(describing: p1), String(describing: p2))
+  }
 }
 // swiftlint:enable function_parameter_count identifier_name line_length type_body_length
 

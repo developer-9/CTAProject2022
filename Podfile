@@ -7,12 +7,20 @@ target 'CTAProject' do
   pod 'SwiftLint'
   pod 'SwiftGen'
   pod 'Unio'
+  pod 'PKHUD'
+  pod 'Kingfisher', '~> 7.0'
+  pod 'RxCocoa'
+  pod 'Moya/RxSwift', '~> 15.0'
+  pod 'RxDataSources', '~> 5.0'
 
   # Pods for CTAProject
 
   target 'CTAProjectTests' do
     inherit! :search_paths
     # Pods for testing
+
+  pod 'RxTest'	
+
   end
 
   target 'CTAProjectUITests' do
