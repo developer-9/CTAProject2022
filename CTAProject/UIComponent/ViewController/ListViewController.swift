@@ -18,14 +18,14 @@ final class ListViewController: UIViewController {
     private let tableView = UITableView()
     private let searchBar = UISearchBar()
 
-    private let viewStream: ListViewModelStreamType
+    private let viewStream: ListViewStreamType
     private var dataSource: RxTableViewSectionedReloadDataSource<ShopResponseSectionModel>?
 
     private let disposeBag = DisposeBag()
 
     // MARK: - Lifecycle
 
-    init(viewStream: ListViewModelStreamType = ListViewStream()) {
+    init(viewStream: ListViewStreamType = ListViewStream()) {
         self.viewStream = viewStream
         super.init(nibName: nil, bundle: nil)
     }

@@ -11,12 +11,12 @@ import RxCocoa
 import RxSwift
 import Unio
 
-protocol ListViewModelStreamType: AnyObject {
+protocol ListViewStreamType: AnyObject {
     var input: InputWrapper<ListViewStream.Input> { get }
     var output: OutputWrapper<ListViewStream.Output> { get }
 }
 
-final class ListViewStream: UnioStream<ListViewStream>, ListViewModelStreamType {
+final class ListViewStream: UnioStream<ListViewStream>, ListViewStreamType {
 
     // MARK: - Initializer
 
