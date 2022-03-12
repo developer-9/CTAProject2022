@@ -24,6 +24,8 @@ final class ListViewStream: UnioStream<ListViewStream>, ListViewStreamType {
         let state = dependency.state
         let extra = dependency.extra
 
+        // MARK: Inputs
+
         input.searchButtonClicked
             .withLatestFrom(input.searchText)
             .flatMapLatest { text -> Single<[Shop]?> in
@@ -50,6 +52,15 @@ final class ListViewStream: UnioStream<ListViewStream>, ListViewStreamType {
                 state.alert.accept(())
             }).disposed(by: disposeBag)
 
+        input.favoriteButtonTapped
+            .withLatestFrom(input.favoriteState)
+            .scan(false, accumulator: { lastState, _ in !lastState })
+            .subscribe(onNext: { isFavorite in
+                state.favoriteState.accept(isFavorite)
+            }).disposed(by: disposeBag)
+
+        // MARK: States
+
         state.hud
             .filter { $0 == .error }
             .delay(.milliseconds(700), scheduler: ConcurrentMainScheduler.instance)
@@ -57,7 +68,9 @@ final class ListViewStream: UnioStream<ListViewStream>, ListViewStreamType {
                 state.hide.accept(())
             }).disposed(by: disposeBag)
 
-        return Output(validatedText: state.validatedText.asObservable(), alert: state.alert.asObservable(), hud: state.hud.asObservable(), hide: state.hide.asObservable(), dataSource: state.datasource.asObservable())
+        return Output(validatedText: state.validatedText.asObservable(), alert: state.alert.asObservable(),
+                      hud: state.hud.asObservable(), hide: state.hide.asObservable(),
+                      dataSource: state.datasource.asObservable(), favoriteState: state.favoriteState.asObservable())
     }
 }
 
@@ -69,6 +82,9 @@ extension ListViewStream {
         let searchText = PublishRelay<String>()
         let searchButtonClicked = PublishRelay<Void>()
         let editingChanged = PublishRelay<Void>()
+        let favoriteState = BehaviorRelay<Bool>(value: false)
+        let favoriteButtonTapped = PublishRelay<Void>()
+        let favoriteShop = PublishRelay<Shop>()
     }
 
     // MARK: - Output
@@ -79,6 +95,7 @@ extension ListViewStream {
         let hud: Observable<HUDContentType>
         let hide: Observable<Void>
         let dataSource: Observable<[ShopResponseSectionModel]>
+        let favoriteState: Observable<Bool>
     }
 
     // MARK: - State
@@ -89,6 +106,7 @@ extension ListViewStream {
         let hud = PublishRelay<HUDContentType>()
         let hide = PublishRelay<Void>()
         let datasource = BehaviorRelay<[ShopResponseSectionModel]>(value: [])
+        let favoriteState = PublishRelay<Bool>()
     }
 
     // MARK: - Extra

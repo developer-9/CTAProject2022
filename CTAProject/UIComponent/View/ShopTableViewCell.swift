@@ -6,7 +6,10 @@
 //
 
 import Kingfisher
+import RxCocoa
+import RxSwift
 import UIKit
+import Unio
 
 final class ShopTableViewCell: UITableViewCell {
 
@@ -49,11 +52,28 @@ final class ShopTableViewCell: UITableViewCell {
         button.tintColor = .systemGray
         return button
     }()
+
+    private var dependency: Dependency!
+    private var disposeBag = DisposeBag()
+
     // MARK: - Lifecycle
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        let viewStream = Dependency().viewStream
         configureUI()
+
+        favoriteButton.rx.tap
+            .subscribe(onNext: { _ in
+                viewStream.input.favoriteButtonTapped.onNext(())
+            })
+            .disposed(by: disposeBag)
+
+        viewStream.output.favoriteState
+            .withUnretained(self)
+            .subscribe(onNext: { me, isFavorite in
+                me.updateFavoriteUI(isFavorite: isFavorite)
+            }).disposed(by: disposeBag)
     }
 
     required init?(coder: NSCoder) {
@@ -66,6 +86,13 @@ final class ShopTableViewCell: UITableViewCell {
     }
 
     // MARK: - Helpers
+
+    private func updateFavoriteUI(isFavorite: Bool) {
+        let systemName = isFavorite ? "star.fill" : "star"
+        let tintColor = isFavorite ? UIColor.orange : UIColor.systemGray
+        favoriteButton.setImage(UIImage(systemName: systemName), for: .normal)
+        favoriteButton.tintColor = tintColor
+    }
 
     private func configureUI() {
         shopImageView.setDimensions(height: 80, width: 80)
@@ -92,5 +119,17 @@ final class ShopTableViewCell: UITableViewCell {
         shopNameLabel.text = item.name
         budgetLabel.text = item.budget.name
         shopDetailLabel.text = L10n.shopDetailText(item.genre?.name ?? "", item.stationName ?? "")
+    }
+}
+
+// MARK: - Dependency Injection
+
+extension ShopTableViewCell {
+    struct Dependency {
+        let viewStream: ListViewStreamType
+
+        init(viewStream: ListViewStreamType = ListViewStream()) {
+            self.viewStream = viewStream
+        }
     }
 }
