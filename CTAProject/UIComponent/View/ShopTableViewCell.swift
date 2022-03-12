@@ -43,6 +43,12 @@ final class ShopTableViewCell: UITableViewCell {
         return label
     }()
 
+    private let favoriteButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "star"), for: .normal)
+        button.tintColor = .systemGray
+        return button
+    }()
     // MARK: - Lifecycle
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -54,21 +60,31 @@ final class ShopTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        addSubview(favoriteButton)
+    }
+
     // MARK: - Helpers
 
     private func configureUI() {
         shopImageView.setDimensions(height: 80, width: 80)
         addSubview(shopImageView)
-        shopImageView.centerY(inView: self, leftAnchor: self.leftAnchor, paddingLeft: 20)
+        shopImageView.centerY(inView: self, leftAnchor: leftAnchor, paddingLeft: 20)
 
         let stack = UIStackView(arrangedSubviews: [shopNameLabel, budgetLabel, shopDetailLabel])
         stack.spacing = 8
         stack.distribution = .fill
         stack.axis = .vertical
 
+        favoriteButton.setDimensions(height: 40, width: 40)
+        addSubview(favoriteButton)
+        favoriteButton.centerY(inView: self)
+        favoriteButton.anchor(right: rightAnchor, paddingRight: 20)
+
         addSubview(stack)
         stack.centerY(inView: self)
-        stack.anchor(left: shopImageView.rightAnchor, right: self.rightAnchor, paddingLeft: 20, paddingRight: 20)
+        stack.anchor(left: shopImageView.rightAnchor, right: favoriteButton.leftAnchor, paddingLeft: 20, paddingRight: 12)
     }
 
     func setupData(item: Shop) {
