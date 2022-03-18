@@ -88,7 +88,7 @@ final class ShopTableViewCell: UITableViewCell {
     // MARK: - Helpers
 
     private func updateFavoriteUI(isFavorite: Bool) {
-        let systemName = isFavorite ? "star.fill" : "star"
+        let systemName = isFavorite ? L10n.favoriteImageFill : L10n.favoriteImage
         let tintColor = isFavorite ? UIColor.orange : UIColor.systemGray
         favoriteButton.setImage(UIImage(systemName: systemName), for: .normal)
         favoriteButton.tintColor = tintColor

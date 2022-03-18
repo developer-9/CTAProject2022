@@ -13,6 +13,10 @@ public enum L10n {
   public static let characterAlertMesssage = L10n.tr("Localizable", "characterAlertMesssage")
   /// 閉じる
   public static let closeButtonTitle = L10n.tr("Localizable", "closeButtonTitle")
+  /// star
+  public static let favoriteImage = L10n.tr("Localizable", "favoriteImage")
+  /// star.fill
+  public static let favoriteImageFill = L10n.tr("Localizable", "favoriteImageFill")
   /// お気に入り
   public static let favoriteTabBarTitle = L10n.tr("Localizable", "favoriteTabBarTitle")
   /// リスト
