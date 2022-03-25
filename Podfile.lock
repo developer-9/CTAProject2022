@@ -1,13 +1,18 @@
 PODS:
   - Alamofire (5.5.0)
   - Differentiator (5.0.0)
-  - Kingfisher (7.1.2)
+  - Kingfisher (7.2.0)
   - Moya/Core (15.0.0):
     - Alamofire (~> 5.0)
   - Moya/RxSwift (15.0.0):
     - Moya/Core
     - RxSwift (~> 6.0)
   - PKHUD (5.3.0)
+  - Realm (10.24.2):
+    - Realm/Headers (= 10.24.2)
+  - Realm/Headers (10.24.2)
+  - RealmSwift (10.24.2):
+    - Realm (= 10.24.2)
   - RxCocoa (6.5.0):
     - RxRelay (= 6.5.0)
     - RxSwift (= 6.5.0)
@@ -15,13 +20,18 @@ PODS:
     - Differentiator (~> 5.0)
     - RxCocoa (~> 6.0)
     - RxSwift (~> 6.0)
+  - RxRealm (5.0.4):
+    - Realm (~> 10.21)
+    - RealmSwift (~> 10.21)
+    - RxCocoa (~> 6.1)
+    - RxSwift (~> 6.1)
   - RxRelay (6.5.0):
     - RxSwift (= 6.5.0)
   - RxSwift (6.5.0)
   - RxTest (6.5.0):
     - RxSwift (= 6.5.0)
   - SwiftGen (6.5.1)
-  - SwiftLint (0.46.2)
+  - SwiftLint (0.46.5)
   - Unio (0.11.0):
     - RxRelay (~> 6.0)
     - RxSwift (~> 6.0)
@@ -30,8 +40,10 @@ DEPENDENCIES:
   - Kingfisher (~> 7.0)
   - Moya/RxSwift (~> 15.0)
   - PKHUD
+  - RealmSwift (~> 10)
   - RxCocoa
   - RxDataSources (~> 5.0)
+  - RxRealm
   - RxTest
   - SwiftGen
   - SwiftLint
@@ -44,8 +56,11 @@ SPEC REPOS:
     - Kingfisher
     - Moya
     - PKHUD
+    - Realm
+    - RealmSwift
     - RxCocoa
     - RxDataSources
+    - RxRealm
     - RxRelay
     - RxSwift
     - RxTest
@@ -56,18 +71,21 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
   Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
-  Kingfisher: 44ed6a8504763f27bab46163adfac83f5deb240c
+  Kingfisher: 3ac0b75b155cabc0e544877d1a4deea29feece92
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
+  Realm: c8421eee9ff92b16b4f91a313b5cc695c37c1921
+  RealmSwift: 10ed6fa09c36aaaff55e12afdc71802ec3ddb1c0
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
   RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
+  RxRealm: 666c8785327fe2fff972a3093b35dc7055c1ca38
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
   RxTest: eb2d23adefc5a5ebf5779c7792fa3edfe6ebcc17
   SwiftGen: a6d22010845f08fe18fbdf3a07a8e380fd22e0ea
-  SwiftLint: 6bc52a21f0fd44cab9aa2dc8e534fb9f5e3ec507
+  SwiftLint: 2c16e8fa99dac2e440dc0c70ea74d2532048f6cf
   Unio: 6e57bd33dbcf38d281b0b420f75c0eae3bef0cf3
 
-PODFILE CHECKSUM: 9fcda85e90ca4489c7a81df326ffdff92d5036e0
+PODFILE CHECKSUM: 726f3092e54d6829f5a530195fd28963c9f44123
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3
