@@ -28,7 +28,7 @@ enum TestMockData {
 extension TestMockData {
 
     static let mockText = "mock text"
-    static let url = URL(string: "https://mock.png")
+    static let url = URL(string: "https://mock.png")!
     static let genre = Genre(name: mockText)
     static let budget = Budget(name: mockText)
 

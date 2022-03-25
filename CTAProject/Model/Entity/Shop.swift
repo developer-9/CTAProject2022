@@ -25,7 +25,7 @@ struct Shop: Decodable, Equatable {
 
     let id: String
     let name: String
-    let logoImage: URL?
+    let logoImage: URL
     let stationName: String?
     let genre: Genre?
     let budget: Budget
