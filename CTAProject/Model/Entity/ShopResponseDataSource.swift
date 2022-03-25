@@ -8,14 +8,14 @@
 import Foundation
 import RxDataSources
 
-struct ShopResponseSectionModel {
+struct ShopResponseDataSource {
     var items: [Item]
 }
 
-extension ShopResponseSectionModel: SectionModelType {
+extension ShopResponseDataSource: SectionModelType {
     typealias Item = Shop
 
-    init(original: ShopResponseSectionModel, items: [Shop]) {
+    init(original: ShopResponseDataSource, items: [Shop]) {
         self = original
         self.items = items
     }

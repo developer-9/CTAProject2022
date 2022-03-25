@@ -12,6 +12,8 @@ target 'CTAProject' do
   pod 'RxCocoa'
   pod 'Moya/RxSwift', '~> 15.0'
   pod 'RxDataSources', '~> 5.0'
+  pod 'RealmSwift', '~>10'
+  pod 'RxRealm'
 
   # Pods for CTAProject
 

@@ -7,3 +7,5 @@
 "characterAlertMesssage" = "文字数が50文字を超過しています。";
 "closeButtonTitle" = "閉じる";
 "shopDetailText" = "%@ / %@駅";
+"favoriteImage" = "star";
+"favoriteImageFill" = "star.fill";

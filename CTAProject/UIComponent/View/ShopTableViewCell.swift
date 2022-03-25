@@ -46,52 +46,62 @@ final class ShopTableViewCell: UITableViewCell {
         return label
     }()
 
-    private let favoriteButton: UIButton = {
+    let favoriteButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "star"), for: .normal)
+        button.setImage(UIImage(systemName: L10n.favoriteImage), for: .normal)
         button.tintColor = .systemGray
+        button.tag = 1
         return button
     }()
 
-    private var dependency: Dependency!
-    private var disposeBag = DisposeBag()
+    private (set) var disposeBag = DisposeBag()
 
     // MARK: - Lifecycle
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        let viewStream = Dependency().viewStream
         configureUI()
-
-        favoriteButton.rx.tap
-            .subscribe(onNext: { _ in
-                viewStream.input.favoriteButtonTapped.onNext(())
-            })
-            .disposed(by: disposeBag)
-
-        viewStream.output.favoriteState
-            .withUnretained(self)
-            .subscribe(onNext: { me, isFavorite in
-                me.updateFavoriteUI(isFavorite: isFavorite)
-            }).disposed(by: disposeBag)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
+    }
+
     override func layoutSubviews() {
         super.layoutSubviews()
         addSubview(favoriteButton)
-    }
+    } 
 
     // MARK: - Helpers
 
-    private func updateFavoriteUI(isFavorite: Bool) {
-        let systemName = isFavorite ? "star.fill" : "star"
-        let tintColor = isFavorite ? UIColor.orange : UIColor.systemGray
-        favoriteButton.setImage(UIImage(systemName: systemName), for: .normal)
-        favoriteButton.tintColor = tintColor
+    func updateFavoriteUI() {
+        if favoriteButton.tag == 0 {
+            favoriteButton.setImage(UIImage(systemName: L10n.favoriteImageFill), for: .normal)
+            favoriteButton.tintColor = .orange
+            favoriteButton.tag = 1
+        } else {
+            favoriteButton.setImage(UIImage(systemName: L10n.favoriteImage), for: .normal)
+            favoriteButton.tintColor = .systemGray
+            favoriteButton.tag = 0
+        }
+    }
+    
+    private func CheckFavorite(item: Shop) {
+        let objectId = RealmRepository().getArray(type: FavoriteShop.self).map { $0.id }
+        if objectId.contains(item.id) {
+            favoriteButton.setImage(UIImage(systemName: L10n.favoriteImageFill), for: .normal)
+            favoriteButton.tintColor = .orange
+            favoriteButton.tag = 1
+        } else {
+            favoriteButton.setImage(UIImage(systemName: L10n.favoriteImage), for: .normal)
+            favoriteButton.tintColor = .systemGray
+            favoriteButton.tag = 0
+        }
     }
 
     private func configureUI() {
@@ -113,23 +123,22 @@ final class ShopTableViewCell: UITableViewCell {
         stack.centerY(inView: self)
         stack.anchor(left: shopImageView.rightAnchor, right: favoriteButton.leftAnchor, paddingLeft: 20, paddingRight: 12)
     }
-
-    func setupData(item: Shop) {
+  
+    func setupSearchData(item: Shop) {
         shopImageView.kf.setImage(with: item.logoImage)
         shopNameLabel.text = item.name
         budgetLabel.text = item.budget.name
         shopDetailLabel.text = L10n.shopDetailText(item.genre?.name ?? "", item.stationName ?? "")
+        
+        CheckFavorite(item: item)
     }
-}
 
-// MARK: - Dependency Injection
-
-extension ShopTableViewCell {
-    struct Dependency {
-        let viewStream: ListViewStreamType
-
-        init(viewStream: ListViewStreamType = ListViewStream()) {
-            self.viewStream = viewStream
-        }
+    func setupFavoriteData(item: FavoriteShop) {
+        shopImageView.kf.setImage(with: URL(string: item.logoImage))
+        shopNameLabel.text = item.name
+        budgetLabel.text = item.budget
+        shopDetailLabel.text = L10n.shopDetailText(item.genre, item.station)
+        favoriteButton.setImage(UIImage(systemName: L10n.favoriteImageFill), for: .normal)
+        favoriteButton.tintColor = .orange
     }
 }

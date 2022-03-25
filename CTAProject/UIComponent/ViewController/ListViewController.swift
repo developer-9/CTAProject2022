@@ -19,7 +19,7 @@ final class ListViewController: UIViewController {
     private let searchBar = UISearchBar()
 
     private let viewStream: ListViewStreamType
-    private var dataSource: RxTableViewSectionedReloadDataSource<ShopResponseSectionModel>?
+    private var dataSource: RxTableViewSectionedReloadDataSource<ShopResponseDataSource>?
 
     private let disposeBag = DisposeBag()
 
@@ -93,17 +93,29 @@ final class ListViewController: UIViewController {
         searchBar.placeholder = L10n.searchBarPlaceholder
         searchBar.backgroundColor = UIColor.CTA.searchBarBackground
     }
-
+    
     private func configureTableView() {
         tableView.rowHeight = Const.TableView.height
         tableView.register(cellType: ShopTableViewCell.self)
-
+        
         dataSource =
-            RxTableViewSectionedReloadDataSource<ShopResponseSectionModel>(configureCell: { _, tableView, indexPath, item in
-                let cell = tableView.dequeueReusableCell(for: indexPath, cellType: ShopTableViewCell.self)
-                cell.setupData(item: item)
-                return cell
-            })
+        RxTableViewSectionedReloadDataSource<ShopResponseDataSource>(configureCell: { [weak self] _, tableView, indexPath, item in
+            guard let me = self else { return UITableViewCell() }
+            let cell = tableView.dequeueReusableCell(for: indexPath, cellType: ShopTableViewCell.self)
+            cell.setupSearchData(item: item)
+            
+            cell.favoriteButton.rx.tap
+                .subscribe(onNext: { _ in
+                    if cell.favoriteButton.tag == 0 {
+                        me.viewStream.input.addFavorite.onNext(item)
+                    } else {
+                        me.viewStream.input.deleteFavorite.onNext(item.id)
+                    }
+                    cell.updateFavoriteUI()
+                }).disposed(by: cell.disposeBag)
+            
+            return cell
+        })
     }
 
     private func configureUI() {
