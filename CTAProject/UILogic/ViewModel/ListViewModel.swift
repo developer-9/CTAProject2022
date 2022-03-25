@@ -15,8 +15,10 @@ final class ListViewStream: UnioStream<ListViewStream>, ListViewStreamType {
 
     // MARK: - Initializer
 
-    convenience init(hotpepperApiRepository: HotpepperRepositoryType = HotpepperRepository()) {
-        self.init(input: Input(), state: State(), extra: Extra(hotpepperApiRepository: hotpepperApiRepository))
+    convenience init(hotpepperApiRepository: HotpepperRepositoryType = HotpepperRepository(),
+                     realmManager: RealmRepositoryType = RealmRepository()) {
+        self.init(input: Input(), state: State(), extra: Extra(hotpepperApiRepository: hotpepperApiRepository,
+                                                               realmManager: realmManager))
     }
 
     static func bind(from dependency: Dependency<Input, State, Extra>, disposeBag: DisposeBag) -> Output {
@@ -52,17 +54,27 @@ final class ListViewStream: UnioStream<ListViewStream>, ListViewStreamType {
                 state.alert.accept(())
             }).disposed(by: disposeBag)
 
-        input.favoriteButtonTapped
-            .withLatestFrom(input.favoriteState)
-            .scan(false, accumulator: { lastState, _ in !lastState })
-            .subscribe(onNext: { isFavorite in
-                state.favoriteState.accept(isFavorite)
+        input.addFavorite
+            .subscribe(onNext: { shop in
+                state.hud.accept(.success)
+                let object = FavoriteShop(shop: shop)
+                extra.realmManager.add(object: object)
+            }, onError: { _ in
+                state.hud.accept(.error)
             }).disposed(by: disposeBag)
 
+        input.deleteFavorite
+            .subscribe(onNext: { id in
+                state.hud.accept(.success)
+                extra.realmManager.delete(type: FavoriteShop.self, id: id)
+            }, onError: { _ in
+                state.hud.accept(.error)
+            }).disposed(by: disposeBag)
+        
         // MARK: States
 
         state.hud
-            .filter { $0 == .error }
+            .filter { $0 == .error || $0 == .success }
             .delay(.milliseconds(700), scheduler: ConcurrentMainScheduler.instance)
             .subscribe(onNext: { _ in
                 state.hide.accept(())
@@ -70,7 +82,7 @@ final class ListViewStream: UnioStream<ListViewStream>, ListViewStreamType {
 
         return Output(validatedText: state.validatedText.asObservable(), alert: state.alert.asObservable(),
                       hud: state.hud.asObservable(), hide: state.hide.asObservable(),
-                      dataSource: state.datasource.asObservable(), favoriteState: state.favoriteState.asObservable())
+                      dataSource: state.datasource.asObservable())
     }
 }
 
@@ -84,7 +96,8 @@ extension ListViewStream {
         let editingChanged = PublishRelay<Void>()
         let favoriteState = BehaviorRelay<Bool>(value: false)
         let favoriteButtonTapped = PublishRelay<Void>()
-        let favoriteShop = PublishRelay<Shop>()
+        let addFavorite = PublishRelay<Shop>()
+        let deleteFavorite = PublishRelay<String>()
     }
 
     // MARK: - Output
@@ -94,8 +107,7 @@ extension ListViewStream {
         let alert: Observable<Void>
         let hud: Observable<HUDContentType>
         let hide: Observable<Void>
-        let dataSource: Observable<[ShopResponseSectionModel]>
-        let favoriteState: Observable<Bool>
+        let dataSource: Observable<[ShopResponseDataSource]>
     }
 
     // MARK: - State
@@ -105,17 +117,18 @@ extension ListViewStream {
         let alert = PublishRelay<Void>()
         let hud = PublishRelay<HUDContentType>()
         let hide = PublishRelay<Void>()
-        let datasource = BehaviorRelay<[ShopResponseSectionModel]>(value: [])
-        let favoriteState = PublishRelay<Bool>()
+        let datasource = BehaviorRelay<[ShopResponseDataSource]>(value: [])
     }
 
     // MARK: - Extra
 
     struct Extra: ExtraType {
         let hotpepperApiRepository: HotpepperRepositoryType
+        let realmManager: RealmRepositoryType
 
-        init(hotpepperApiRepository: HotpepperRepositoryType) {
+        init(hotpepperApiRepository: HotpepperRepositoryType, realmManager: RealmRepositoryType) {
             self.hotpepperApiRepository = hotpepperApiRepository
+            self.realmManager = realmManager
         }
     }
 }
