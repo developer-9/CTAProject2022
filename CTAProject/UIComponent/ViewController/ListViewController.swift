@@ -102,6 +102,20 @@ final class ListViewController: UIViewController {
         RxTableViewSectionedReloadDataSource<ShopResponseDataSource>(configureCell: { [weak self] _, tableView, indexPath, item in
             guard let me = self else { return UITableViewCell() }
             let cell = tableView.dequeueReusableCell(for: indexPath, cellType: ShopTableViewCell.self)
+            cell.setupSearchData(item: item)
+            
+            cell.favoriteButton.rx.tap
+                .subscribe(onNext: { _ in
+                    if cell.favoriteButton.tag == 0 {
+                        me.viewStream.input.addFavorite.onNext(item)
+                    } else {
+                        me.viewStream.input.deleteFavorite.onNext(item.id)
+                    }
+                    cell.updateFavoriteUI()
+                }).disposed(by: cell.disposeBag)
+            
+            return cell
+        })
     }
 
     private func configureUI() {
